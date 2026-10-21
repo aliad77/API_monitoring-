@@ -59,8 +59,8 @@ export default async function MonitorsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-left text-xs text-zinc-500 dark:text-zinc-400">
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
+              <thead className="text-left font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+                <tr className="border-b border-(--edge)">
                   <th scope="col" className="px-5 py-3 font-medium">
                     Monitor
                   </th>
@@ -90,11 +90,11 @@ export default async function MonitorsPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <tbody className="divide-y divide-(--edge)">
                 {monitors.map((monitor) => (
                   <tr
                     key={monitor.id}
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                    className="hover:bg-lavender/5"
                   >
                     <td className="max-w-xs px-5 py-3">
                       <Link
@@ -103,17 +103,17 @@ export default async function MonitorsPage() {
                       >
                         {monitor.name}
                       </Link>
-                      <span className="block truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">
+                      <span className="block truncate font-mono text-xs text-haze-500 dark:text-haze-400">
                         {monitor.method} {monitor.url}
                       </span>
                     </td>
                     <td className="px-5 py-3">
                       <StatusBadge status={displayStatus(monitor)} />
                     </td>
-                    <td className="hidden px-5 py-3 text-zinc-600 md:table-cell dark:text-zinc-300">
+                    <td className="hidden px-5 py-3 text-haze-600 md:table-cell dark:text-haze-300">
                       {formatInterval(monitor.intervalSeconds)}
                     </td>
-                    <td className="hidden px-5 py-3 text-zinc-600 sm:table-cell dark:text-zinc-300">
+                    <td className="hidden px-5 py-3 text-haze-600 sm:table-cell dark:text-haze-300">
                       {monitor.lastCheckedAt
                         ? formatRelative(monitor.lastCheckedAt)
                         : "Never"}

@@ -41,17 +41,17 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   const point = payload?.[0]?.payload as ChartPoint | undefined;
   if (!active || !point) return null;
   return (
-    <div className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-xs shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-      <p className="font-medium text-zinc-900 dark:text-zinc-100">
+    <div className="rounded-lg border border-(--edge) bg-(--surface-solid) px-3 py-2 text-xs shadow-lg">
+      <p className="font-medium text-haze-900 dark:text-haze-100">
         {fullFormat.format(new Date(point.time))} UTC
       </p>
-      <p className="mt-1 text-zinc-600 dark:text-zinc-300">
+      <p className="mt-1 text-haze-600 dark:text-haze-300">
         Avg response:{" "}
         {point.avgResponseTimeMs === null
           ? "—"
           : `${Math.round(point.avgResponseTimeMs)} ms`}
       </p>
-      <p className="text-zinc-600 dark:text-zinc-300">
+      <p className="text-haze-600 dark:text-haze-300">
         {point.total} checks{point.failed > 0 ? `, ${point.failed} failed` : ""}
       </p>
     </div>
@@ -67,14 +67,14 @@ export function ResponseTimeChart({
 }) {
   if (points.length === 0) {
     return (
-      <p className="flex h-64 items-center justify-center text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="flex h-64 items-center justify-center text-sm text-haze-500 dark:text-haze-400">
         No checks recorded in this period yet.
       </p>
     );
   }
 
   return (
-    <div className="h-64 text-zinc-500 dark:text-zinc-400">
+    <div className="chart-glow animate-chart-reveal h-64 text-haze-500 dark:text-haze-400">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={points}
@@ -84,19 +84,20 @@ export function ResponseTimeChart({
             <linearGradient id="responseFill" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="0%"
-                stopColor="var(--color-sky-500)"
-                stopOpacity={0.2}
+                stopColor="var(--chart-line)"
+                stopOpacity={0.28}
               />
               <stop
                 offset="100%"
-                stopColor="var(--color-sky-500)"
+                stopColor="var(--color-candy)"
                 stopOpacity={0}
               />
             </linearGradient>
           </defs>
           <CartesianGrid
             vertical={false}
-            className="stroke-zinc-200 dark:stroke-zinc-800"
+            strokeDasharray="2 4"
+            className="stroke-haze-300 dark:stroke-haze-800"
           />
           <XAxis
             dataKey="time"
@@ -119,15 +120,16 @@ export function ResponseTimeChart({
             content={<ChartTooltip />}
             cursor={{ stroke: "currentColor", strokeOpacity: 0.3 }}
           />
+          {/* Step interpolation matches the data: each point is a bucket average. */}
           <Area
-            type="monotone"
+            type="stepAfter"
             dataKey="avgResponseTimeMs"
-            stroke="var(--color-sky-500)"
+            stroke="var(--chart-line)"
             strokeWidth={2}
             fill="url(#responseFill)"
             connectNulls
             isAnimationActive={false}
-            activeDot={{ r: 4 }}
+            activeDot={{ r: 4, fill: "var(--chart-line)", strokeWidth: 0 }}
           />
         </AreaChart>
       </ResponsiveContainer>

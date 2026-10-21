@@ -49,23 +49,23 @@ const serviceLabels: Record<
   PAUSED: {
     label: "Not monitored",
     icon: PauseCircle,
-    className: "text-zinc-500",
+    className: "text-haze-500",
   },
 };
 
 function overallStatus(services: PublicStatusPage["services"]) {
   const down = services.filter((service) => service.status === "DOWN").length;
   if (down === 0) {
-    return { text: "All systems operational", className: "bg-emerald-600" };
+    return { text: "All systems operational", className: "bg-emerald-700" };
   }
   if (down === services.length) {
-    return { text: "Major outage", className: "bg-red-600" };
+    return { text: "Major outage", className: "bg-red-700" };
   }
-  return { text: "Partial outage", className: "bg-amber-600" };
+  return { text: "Partial outage", className: "bg-amber-700" };
 }
 
 function dayBarClass(uptime: number | null) {
-  if (uptime === null) return "bg-zinc-200 dark:bg-zinc-800";
+  if (uptime === null) return "bg-lavender/15";
   if (uptime >= 99) return "bg-emerald-500";
   if (uptime >= 95) return "bg-amber-500";
   return "bg-red-500";
@@ -84,14 +84,18 @@ export default async function PublicStatusPageView({ params }: PageProps) {
   const overall = overallStatus(page.services);
 
   return (
+    <div className="grid-canvas min-h-screen">
     <div className="mx-auto max-w-3xl px-4 py-10">
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <p className="font-pixel text-[11px] tracking-widest text-lavender-deep uppercase dark:text-lavender">
+            Status
+          </p>
+          <h1 className="mt-1 font-display text-3xl font-bold tracking-tight">
             {page.title}
           </h1>
           {page.description && (
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-sm text-haze-500 dark:text-haze-400">
               {page.description}
             </p>
           )}
@@ -101,28 +105,29 @@ export default async function PublicStatusPageView({ params }: PageProps) {
 
       {page.services.length > 0 && (
         <div
-          className={`mb-8 rounded-lg px-5 py-4 font-medium text-white ${overall.className}`}
+          className={`mb-8 flex items-center gap-3 rounded-2xl px-5 py-4 font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35)] ${overall.className}`}
         >
+          <span className="size-2.5 bg-white" aria-hidden />
           {overall.text}
         </div>
       )}
 
       <section
         aria-labelledby="services-heading"
-        className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+        className="glass rounded-2xl"
       >
         <h2
           id="services-heading"
-          className="border-b border-zinc-200 px-5 py-3 text-sm font-semibold dark:border-zinc-800"
+          className="border-b border-(--edge) px-5 py-3 font-pixel text-xs tracking-wide uppercase"
         >
           Services
         </h2>
         {page.services.length === 0 ? (
-          <p className="px-5 py-8 text-center text-sm text-zinc-500">
+          <p className="px-5 py-8 text-center text-sm text-haze-500">
             No services are listed on this page yet.
           </p>
         ) : (
-          <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <ul className="divide-y divide-(--edge)">
             {page.services.map((service, index) => {
               const {
                 label,
@@ -141,7 +146,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
                     </span>
                   </div>
                   <div
-                    className="mt-3 flex h-8 gap-0.5"
+                    className="mt-3 flex h-8 gap-[3px]"
                     role="img"
                     aria-label={`Daily uptime for the last 30 days: ${formatUptime(service.uptime)} overall`}
                   >
@@ -149,11 +154,11 @@ export default async function PublicStatusPageView({ params }: PageProps) {
                       <div
                         key={day.date}
                         title={`${dayFormat.format(new Date(day.date))}: ${formatUptime(day.uptime)}`}
-                        className={`flex-1 rounded-sm ${dayBarClass(day.uptime)}`}
+                        className={`flex-1 ${dayBarClass(day.uptime)}`}
                       />
                     ))}
                   </div>
-                  <div className="mt-2 flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                  <div className="mt-2 flex justify-between text-xs text-haze-500 dark:text-haze-400">
                     <span>
                       {dayFormat.format(new Date(service.days[0].date))}
                     </span>
@@ -168,11 +173,14 @@ export default async function PublicStatusPageView({ params }: PageProps) {
       </section>
 
       <section aria-labelledby="incidents-heading" className="mt-8">
-        <h2 id="incidents-heading" className="mb-3 text-sm font-semibold">
+        <h2
+          id="incidents-heading"
+          className="mb-3 font-pixel text-xs tracking-wide uppercase"
+        >
           Incidents in the last 30 days
         </h2>
         {page.incidents.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-haze-500 dark:text-haze-400">
             No incidents reported.
           </p>
         ) : (
@@ -180,13 +188,13 @@ export default async function PublicStatusPageView({ params }: PageProps) {
             {page.incidents.map((incident) => (
               <li
                 key={`${incident.serviceName}-${incident.startedAt}`}
-                className="rounded-lg border border-zinc-200 bg-white px-5 py-3 text-sm dark:border-zinc-800 dark:bg-zinc-900"
+                className="glass rounded-xl px-5 py-3 text-sm"
               >
                 <p className="font-medium">
                   {incident.serviceName}{" "}
                   {incident.resolvedAt ? "was unavailable" : "is unavailable"}
                 </p>
-                <p className="mt-1 text-zinc-500 dark:text-zinc-400">
+                <p className="mt-1 text-haze-500 dark:text-haze-400">
                   Started {formatDateTime(incident.startedAt)}
                   {incident.resolvedAt
                     ? ` · resolved after ${formatDuration(new Date(incident.resolvedAt).getTime() - new Date(incident.startedAt).getTime())}`
@@ -198,11 +206,12 @@ export default async function PublicStatusPageView({ params }: PageProps) {
         )}
       </section>
 
-      <footer className="mt-12 flex justify-center text-sm text-zinc-500">
+      <footer className="mt-12 flex justify-center text-sm text-haze-500">
         <span className="inline-flex items-center gap-2">
           Powered by <Logo />
         </span>
       </footer>
+    </div>
     </div>
   );
 }

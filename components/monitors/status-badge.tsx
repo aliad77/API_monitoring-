@@ -1,34 +1,32 @@
-import { CheckCircle2, CircleHelp, PauseCircle, XCircle } from "lucide-react";
-
 export type DisplayStatus = "UP" | "DOWN" | "UNKNOWN" | "PAUSED";
 
 const styles: Record<
   DisplayStatus,
-  { label: string; className: string; icon: typeof CheckCircle2 }
+  { label: string; badge: string; marker: string }
 > = {
   UP: {
     label: "Operational",
-    className:
-      "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-950 dark:text-emerald-300 dark:ring-emerald-400/20",
-    icon: CheckCircle2,
+    badge:
+      "bg-emerald-50 text-emerald-800 ring-emerald-600/25 dark:bg-emerald-400/10 dark:text-emerald-300 dark:ring-emerald-400/25",
+    marker: "bg-emerald-500",
   },
   DOWN: {
     label: "Down",
-    className:
-      "bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-950 dark:text-red-300 dark:ring-red-400/20",
-    icon: XCircle,
+    badge:
+      "bg-red-50 text-red-800 ring-red-600/25 dark:bg-red-400/10 dark:text-red-300 dark:ring-red-400/30",
+    marker: "bg-red-500 animate-pixel-blink",
   },
   UNKNOWN: {
     label: "Pending",
-    className:
-      "bg-amber-50 text-amber-800 ring-amber-600/20 dark:bg-amber-950 dark:text-amber-300 dark:ring-amber-400/20",
-    icon: CircleHelp,
+    badge:
+      "bg-amber-50 text-amber-900 ring-amber-600/25 dark:bg-amber-400/10 dark:text-amber-200 dark:ring-amber-400/25",
+    marker: "bg-amber-500",
   },
   PAUSED: {
     label: "Paused",
-    className:
-      "bg-zinc-100 text-zinc-600 ring-zinc-500/20 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-400/20",
-    icon: PauseCircle,
+    badge:
+      "bg-haze-100 text-haze-700 ring-haze-500/25 dark:bg-haze-800 dark:text-haze-300 dark:ring-haze-400/25",
+    marker: "bg-haze-400",
   },
 };
 
@@ -39,14 +37,14 @@ export function displayStatus(monitor: {
   return monitor.isActive ? monitor.status : "PAUSED";
 }
 
-/** Status is always shown with an icon and text, never colour alone. */
+/** Status always has a text label; the pixel marker is never the only cue. */
 export function StatusBadge({ status }: { status: DisplayStatus }) {
-  const { label, className, icon: Icon } = styles[status];
+  const { label, badge, marker } = styles[status];
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 font-pixel text-[11px] tracking-wide uppercase ring-1 ring-inset ${badge}`}
     >
-      <Icon className="size-3.5" aria-hidden />
+      <span className={`size-1.5 ${marker}`} aria-hidden />
       {label}
     </span>
   );

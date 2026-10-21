@@ -105,7 +105,7 @@ export function MonitorActions({ monitor }: MonitorActionsProps) {
       </div>
       <p
         aria-live="polite"
-        className="text-xs text-zinc-500 dark:text-zinc-400"
+        className="text-xs text-haze-500 dark:text-haze-400"
       >
         {message}
       </p>

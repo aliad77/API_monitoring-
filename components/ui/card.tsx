@@ -8,14 +8,11 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section
-      className={`rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
-    >
-      {children}
-    </section>
+    <section className={`glass rounded-2xl ${className}`}>{children}</section>
   );
 }
 
+/** A retro window title bar: three pixel "buttons" and a pixel-font title. */
 export function CardHeader({
   title,
   action,
@@ -24,8 +21,17 @@ export function CardHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-zinc-200 px-5 py-3 dark:border-zinc-800">
-      <h2 className="text-sm font-semibold">{title}</h2>
+    <div className="flex items-center justify-between gap-4 border-b border-(--edge) px-5 py-3">
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="flex shrink-0 gap-1" aria-hidden>
+          <span className="size-2 bg-lavender" />
+          <span className="size-2 bg-haze-300 dark:bg-haze-700" />
+          <span className="size-2 bg-haze-300 dark:bg-haze-700" />
+        </span>
+        <h2 className="truncate font-pixel text-xs tracking-wide text-haze-700 uppercase dark:text-haze-200">
+          {title}
+        </h2>
+      </div>
       {action}
     </div>
   );

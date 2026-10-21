@@ -19,7 +19,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label="Toggle dark mode"
-      className="rounded-md p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+      className="rounded-lg p-2 text-haze-600 transition hover:bg-lavender/10 hover:text-haze-950 active:translate-y-px dark:text-haze-300 dark:hover:text-white"
     >
       <Sun className="hidden size-4 dark:block" aria-hidden />
       <Moon className="size-4 dark:hidden" aria-hidden />

@@ -40,7 +40,7 @@ export default async function SettingsPage() {
 
       <Card>
         <CardHeader title="Notifications" />
-        <p className="p-5 text-sm text-zinc-600 dark:text-zinc-300">
+        <p className="p-5 text-sm text-haze-600 dark:text-haze-300">
           Incident alerts are delivered in-app on the Notifications page. Email
           delivery is not implemented.
         </p>
@@ -49,7 +49,7 @@ export default async function SettingsPage() {
       <Card className="border-red-200 dark:border-red-900">
         <CardHeader title="Delete account" />
         <div className="space-y-4 p-5">
-          <p className="text-sm text-zinc-600 dark:text-zinc-300">
+          <p className="text-sm text-haze-600 dark:text-haze-300">
             Permanently removes your account, monitors, check history, incidents
             and status pages. This cannot be undone.
           </p>

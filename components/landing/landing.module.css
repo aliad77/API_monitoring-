@@ -1,0 +1,1259 @@
+/*
+ * Landing page scenes.
+ *
+ * Each scene has a complete static layout first. Everything that moves lives
+ * in the `prefers-reduced-motion: no-preference` block at the bottom and reads
+ * two inputs written by <ScrollStage>:
+ *
+ *   --p      scroll progress through the scene, 0 → 1
+ *   --mx/my  pointer offset from the centre, -0.5 → 0.5
+ *
+ * Only transform and opacity are animated. Containers that hold 3D children
+ * never get opacity, filter or overflow, because those flatten preserve-3d.
+ */
+
+.stage {
+  --mx: 0;
+  --my: 0;
+  --page-p: 0;
+  position: relative;
+  /* `clip` (unlike `hidden`) doesn't create a scroll container, so the
+     sticky scenes inside keep working. */
+  overflow-x: clip;
+}
+
+.progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 3px;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--page-p));
+  background: linear-gradient(
+    90deg,
+    var(--color-lavender),
+    var(--color-candy),
+    var(--color-aqua)
+  );
+}
+
+.scene {
+  position: relative;
+}
+
+.pin {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: 100svh;
+  padding: 6rem 1.25rem 3rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-lavender-deep);
+}
+
+:global(.dark) .kicker {
+  color: var(--color-lavender);
+}
+
+.kickerDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--color-acid);
+  box-shadow: 0 0 10px var(--color-acid);
+}
+
+.iridescent {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-lavender-deep) 0%,
+    #c45bb0 45%,
+    #2a9fc0 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:global(.dark) .iridescent {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-lavender) 0%,
+    var(--color-candy) 50%,
+    var(--color-aqua) 100%
+  );
+}
+
+.sample {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-void);
+  background: var(--color-acid);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scene 1–2: hero and the monitoring station                          */
+/* ------------------------------------------------------------------ */
+
+.hero {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+.heroText {
+  position: relative;
+  z-index: 2;
+}
+
+.headline {
+  margin-top: 1.25rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6.2vw, 5.25rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.heroInside {
+  margin-top: 2.5rem;
+}
+
+.insideTitle {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.scrollCue {
+  display: none;
+}
+
+.station {
+  --w: 340px;
+  --h: 250px;
+  --d: 110px;
+  /* Scales how far the floating panels sit from the screen. */
+  --spread: 1;
+  position: relative;
+  width: var(--w);
+  height: calc(var(--h) + 110px);
+  margin: 0 auto;
+  perspective: 1200px;
+  pointer-events: none;
+}
+
+.rig,
+.float {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.rig {
+  transform: rotateX(8deg) rotateY(-22deg);
+}
+
+.box {
+  position: absolute;
+  transform-style: preserve-3d;
+  width: var(--bw);
+  height: var(--bh);
+}
+
+.face {
+  position: absolute;
+  border-radius: 6px;
+}
+
+.faceFront,
+.faceBack {
+  inset: 0;
+}
+
+.faceFront {
+  transform: translateZ(calc(var(--bd) / 2));
+}
+
+.faceBack {
+  transform: rotateY(180deg) translateZ(calc(var(--bd) / 2));
+}
+
+.faceLeft,
+.faceRight {
+  top: 0;
+  left: calc(50% - var(--bd) / 2);
+  width: var(--bd);
+  height: var(--bh);
+}
+
+.faceLeft {
+  transform: rotateY(-90deg) translateZ(calc(var(--bw) / 2));
+}
+
+.faceRight {
+  transform: rotateY(90deg) translateZ(calc(var(--bw) / 2));
+}
+
+.faceTop,
+.faceBottom {
+  left: 0;
+  top: calc(50% - var(--bd) / 2);
+  width: var(--bw);
+  height: var(--bd);
+}
+
+.faceTop {
+  transform: rotateX(90deg) translateZ(calc(var(--bh) / 2));
+}
+
+.faceBottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--bh) / 2));
+}
+
+/* Chrome shading: light comes from the top left. */
+.chromeBox .faceFront,
+.chromeBox .faceBack {
+  background: linear-gradient(155deg, #ffffff 0%, #dcd5f1 45%, #b4a9d6 100%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.7);
+}
+
+.chromeBox .faceTop {
+  background: linear-gradient(180deg, #ffffff, #e6e0f7);
+}
+
+.chromeBox .faceLeft {
+  background: linear-gradient(90deg, #c8bfe6, #ece7fb);
+}
+
+.chromeBox .faceRight {
+  background: linear-gradient(90deg, #a397c7, #7c6fa6);
+}
+
+.chromeBox .faceBottom {
+  background: #6e6296;
+}
+
+:global(.dark) .chromeBox .faceFront,
+:global(.dark) .chromeBox .faceBack {
+  background: linear-gradient(155deg, #f2eefe 0%, #b9aee0 50%, #7e70ad 100%);
+}
+
+.monitor {
+  --bw: var(--w);
+  --bh: var(--h);
+  --bd: var(--d);
+  left: 0;
+  top: 0;
+}
+
+.neck {
+  --bw: 64px;
+  --bh: 54px;
+  --bd: 44px;
+  left: calc(50% - 32px);
+  top: calc(var(--h) - 6px);
+}
+
+.base {
+  --bw: 200px;
+  --bh: 16px;
+  --bd: 130px;
+  left: calc(50% - 100px);
+  top: calc(var(--h) + 46px);
+}
+
+.bezel {
+  position: absolute;
+  inset: 14px 14px 30px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #1a1330;
+  box-shadow:
+    inset 0 0 0 2px #0d0918,
+    inset 0 0 24px rgb(155 123 255 / 0.35);
+}
+
+/* Scanlines and a soft vignette sell the CRT look. */
+.bezel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 0.04) 0 1px,
+      transparent 1px 3px
+    ),
+    radial-gradient(
+      120% 90% at 50% 40%,
+      transparent 55%,
+      rgb(0 0 0 / 0.45) 100%
+    );
+  pointer-events: none;
+}
+
+.screen {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  color: #e9e3ff;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.screenHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-lavender);
+}
+
+.screenTrace {
+  height: 3.25rem;
+  color: var(--color-aqua);
+  filter: drop-shadow(0 0 6px rgb(100 233 255 / 0.7));
+}
+
+.screenRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.screenRow span:last-child {
+  margin-left: auto;
+}
+
+.led {
+  width: 0.4rem;
+  height: 0.4rem;
+  flex-shrink: 0;
+}
+
+.brandPlate {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  translate: -50% 0;
+  font-family: var(--font-pixel);
+  font-size: 0.5625rem;
+  letter-spacing: 0.2em;
+  color: #6e6296;
+}
+
+.chip {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  white-space: nowrap;
+  border: 1px solid var(--edge);
+  border-radius: 0.75rem;
+  background: var(--surface-solid);
+  box-shadow: 0 14px 30px -16px var(--glow);
+  font-size: 0.75rem;
+  font-weight: 600;
+  translate: -50% -50%;
+  transform: translate3d(
+    calc(var(--x) * var(--spread)),
+    calc(var(--y) * var(--spread)),
+    var(--z)
+  );
+}
+
+.chipLabel {
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-haze-500);
+}
+
+.miniBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 1.25rem;
+}
+
+.miniBars span {
+  width: 4px;
+  background: var(--color-lavender);
+}
+
+.orbit {
+  display: none;
+}
+
+.stationCaption {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-haze-500);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scene 3: how Pulse works                                            */
+/* ------------------------------------------------------------------ */
+
+.pipeline {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.sectionTitle {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.steps {
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.25rem;
+  counter-reset: step;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 0.25rem 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  transition:
+    background-color 0.3s,
+    opacity 0.3s;
+}
+
+.stepNumber {
+  grid-row: span 2;
+  font-family: var(--font-pixel);
+  font-size: 0.875rem;
+  color: var(--color-lavender-deep);
+}
+
+:global(.dark) .stepNumber {
+  color: var(--color-lavender);
+}
+
+.stepTitle {
+  font-weight: 600;
+}
+
+.stepBody {
+  font-size: 0.875rem;
+  color: var(--color-haze-500);
+}
+
+:global(.dark) .stepBody {
+  color: var(--color-haze-400);
+}
+
+.rail {
+  display: none;
+}
+
+.flyport {
+  position: relative;
+}
+
+.world {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .world {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.floor,
+.beam {
+  display: none;
+}
+
+.window {
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  border-radius: 1rem;
+  background: var(--surface-solid);
+  box-shadow:
+    inset 0 1px 0 var(--highlight),
+    0 24px 50px -30px var(--glow);
+}
+
+.windowBar {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--edge);
+  background: linear-gradient(
+    90deg,
+    rgb(155 123 255 / 0.18),
+    rgb(100 233 255 / 0.08)
+  );
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.windowBar > span:nth-child(-n + 3) {
+  width: 0.4rem;
+  height: 0.4rem;
+  background: var(--color-haze-300);
+}
+
+.windowBar > span:first-child {
+  background: var(--color-lavender);
+}
+
+.windowBar .sample {
+  margin-left: auto;
+}
+
+.windowBody {
+  display: grid;
+  gap: 0.625rem;
+  padding: 0.875rem;
+  font-size: 0.8125rem;
+}
+
+.fakeField {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.fakeField span:first-child {
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-haze-500);
+}
+
+.fakeField span:last-child {
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--edge);
+  border-radius: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.packets {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.packets span {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--color-aqua);
+}
+
+.bigNumber {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.historyBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 3rem;
+}
+
+.historyBars span {
+  flex: 1;
+  background: var(--color-lavender);
+}
+
+.historyBars span[data-down] {
+  background: var(--color-candy);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scene 4: floating dashboard                                         */
+/* ------------------------------------------------------------------ */
+
+.boardViewport {
+  margin-top: 2.5rem;
+  perspective: 1400px;
+}
+
+.board {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--edge);
+  border-radius: 1.25rem;
+  background: var(--canvas);
+  box-shadow: 0 50px 100px -50px var(--glow);
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 768px) {
+  .board {
+    grid-template-columns: 11rem 1fr;
+  }
+}
+
+.boardSide {
+  display: none;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: 1px solid var(--edge);
+  border-radius: 0.875rem;
+  background: var(--surface-solid);
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .boardSide {
+    display: flex;
+  }
+}
+
+.boardSide span {
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.boardSide span[aria-current] {
+  background: rgb(155 123 255 / 0.18);
+  font-weight: 600;
+}
+
+.boardMain {
+  display: grid;
+  gap: 0.75rem;
+  transform-style: preserve-3d;
+}
+
+.boardStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .boardStats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.boardTile {
+  padding: 0.75rem;
+  border: 1px solid var(--edge);
+  border-radius: 0.875rem;
+  background: var(--surface-solid);
+}
+
+.boardTile p:first-child {
+  font-family: var(--font-pixel);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-haze-500);
+}
+
+.boardTile p:last-child {
+  margin-top: 0.375rem;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.boardChart {
+  padding: 0.75rem;
+  border: 1px solid var(--edge);
+  border-radius: 0.875rem;
+  background: var(--surface-solid);
+}
+
+.boardChart svg {
+  display: block;
+  width: 100%;
+  height: 8rem;
+  margin-top: 0.5rem;
+  color: var(--chart-line);
+  overflow: visible;
+}
+
+.chartLine {
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+
+.boardRows {
+  display: grid;
+  border: 1px solid var(--edge);
+  border-radius: 0.875rem;
+  background: var(--surface-solid);
+}
+
+.boardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.boardRow + .boardRow {
+  border-top: 1px solid var(--edge);
+}
+
+.boardRow code {
+  font-size: 0.75rem;
+  color: var(--color-haze-500);
+}
+
+/* ------------------------------------------------------------------ */
+/* Spec sheet and final call to action                                 */
+/* ------------------------------------------------------------------ */
+
+.specGrid {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 1rem;
+  perspective: 900px;
+}
+
+@media (min-width: 640px) {
+  .specGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .specGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.specCard {
+  padding: 1.25rem;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.specIcon {
+  --pixel-color: var(--color-lavender);
+  display: inline-flex;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: rgb(155 123 255 / 0.12);
+}
+
+.cta {
+  padding: 8rem 1.25rem 6rem;
+  text-align: center;
+  perspective: 900px;
+}
+
+.wordmark {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 19vw, 15rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+/* An offset copy behind the chrome text acts as a pixel drop shadow;
+   text-shadow doesn't combine well with background-clip: text. */
+.wordmark::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--color-lavender);
+  transform: translate(0.06em, 0.06em);
+}
+
+:global(.dark) .wordmark::before {
+  color: var(--color-lavender-deep);
+}
+
+.ctaTitle {
+  margin-top: 2rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.6vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ */
+/* Desktop layout                                                      */
+/* ------------------------------------------------------------------ */
+
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  }
+
+  .pipeline {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: center;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/* ------------------------------------------------------------------ */
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotateZ(0deg);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) rotateZ(-1deg);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes beamFlow {
+  to {
+    transform: translate3d(0, 48px, 0);
+  }
+}
+
+@keyframes packet {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes nudge {
+  50% {
+    transform: translate3d(0, 6px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scene {
+    --p: 0;
+  }
+
+  /* Tall scenes give the pinned content room to animate while scrolling. */
+  .heroScene {
+    height: 230vh;
+  }
+
+  .pipelineScene {
+    height: 460vh;
+  }
+
+  .boardScene {
+    height: 240vh;
+  }
+
+  .heroScene .pin,
+  .pipelineScene .pin,
+  .boardScene .pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+  }
+
+  /* Hero: the copy swaps once, halfway through, while the station keeps
+     moving continuously. `visibility` removes hidden links from tab order. */
+  .heroText {
+    display: grid;
+  }
+
+  .heroCopy,
+  .heroInside {
+    grid-area: 1 / 1;
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease,
+      visibility 0.5s;
+  }
+
+  .heroInside {
+    margin-top: 0;
+    align-self: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, 2rem, 0);
+  }
+
+  .heroScene[data-step="1"] .heroCopy {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(-2rem, 0, 0);
+  }
+
+  .heroScene[data-step="1"] .heroInside {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .scrollCue {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    translate: -50% 0;
+    font-family: var(--font-pixel);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    color: var(--color-haze-500);
+    opacity: calc(1 - var(--p) * 4);
+    animation: nudge 1.6s steps(4) infinite;
+  }
+
+  /* Scroll turns the station towards the viewer and moves the "camera"
+     closer; the pointer adds at most ±6° of tilt. */
+  .rig {
+    transform: translate3d(0, calc(var(--p) * -3vh), 0)
+      rotateX(calc(9deg - var(--p) * 12deg - var(--my) * 12deg))
+      rotateY(calc(-24deg + var(--p) * 40deg + var(--mx) * 12deg))
+      scale(calc(1 + var(--p) * 0.28));
+  }
+
+  .float {
+    animation: bob 6s ease-in-out infinite;
+  }
+
+  /* Panels drift away from the screen as the station turns, like an
+     exploded view of the interface. */
+  .chip {
+    transform: translate3d(
+      calc(var(--x) * var(--spread) * (1 + var(--p) * 0.45)),
+      calc(var(--y) * var(--spread) * (1 + var(--p) * 0.35)),
+      calc(var(--z) * (1 + var(--p) * 1.6))
+    );
+  }
+
+  .orbit {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    display: block;
+    transform-style: preserve-3d;
+    animation: spin 18s linear infinite;
+  }
+
+  .orbiter {
+    position: absolute;
+    transform: rotateY(var(--angle)) translate3d(0, var(--lift), 230px);
+  }
+
+  /* Scene 3: the camera flies down a corridor of panels. `--d` is each
+     panel's distance from the camera in steps: negative is ahead, positive
+     has already been passed. */
+  .pipeline {
+    height: 100%;
+    align-content: center;
+  }
+
+  .rail {
+    display: flex;
+    gap: 4px;
+    margin-top: 1.5rem;
+  }
+
+  .rail span {
+    width: 1.75rem;
+    height: 0.5rem;
+    background: var(--color-haze-200);
+    transition: background-color 0.3s;
+  }
+
+  :global(.dark) .rail span {
+    background: var(--color-haze-800);
+  }
+
+  .step {
+    opacity: 0.45;
+  }
+
+  .pipelineScene[data-step="0"] .step:nth-child(1),
+  .pipelineScene[data-step="1"] .step:nth-child(2),
+  .pipelineScene[data-step="2"] .step:nth-child(3),
+  .pipelineScene[data-step="3"] .step:nth-child(4),
+  .pipelineScene[data-step="4"] .step:nth-child(5) {
+    opacity: 1;
+    background: rgb(155 123 255 / 0.12);
+  }
+
+  .pipelineScene[data-step="0"] .rail span:nth-child(-n + 1),
+  .pipelineScene[data-step="1"] .rail span:nth-child(-n + 2),
+  .pipelineScene[data-step="2"] .rail span:nth-child(-n + 3),
+  .pipelineScene[data-step="3"] .rail span:nth-child(-n + 4),
+  .pipelineScene[data-step="4"] .rail span:nth-child(-n + 5) {
+    background: var(--color-lavender);
+  }
+
+  .flyport {
+    height: min(30rem, 62svh);
+    perspective: 1100px;
+    perspective-origin: 50% 40%;
+  }
+
+  .world {
+    --gap: 560px;
+    position: absolute;
+    inset: 0;
+    display: block;
+    transform-style: preserve-3d;
+    transform: rotateX(6deg) rotateY(-16deg)
+      translate3d(0, 0, calc(var(--p) * (var(--n) - 1) * var(--gap)));
+  }
+
+  .flyPanel {
+    --d: calc(var(--p) * (var(--n) - 1) - var(--i));
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 19rem;
+    translate: -50% -50%;
+    transform: translate3d(
+        calc(var(--side) * 5.5rem),
+        0,
+        calc(var(--i) * var(--gap) * -1)
+      )
+      rotateY(calc(var(--side) * -8deg));
+    /* Fade quickly once passed, dim gently when far ahead. */
+    opacity: min(
+      clamp(0, 1 - var(--d) * 1.8, 1),
+      clamp(0.18, 1 + var(--d) * 0.45, 1)
+    );
+  }
+
+  .floor {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    width: 900px;
+    height: calc(var(--n) * var(--gap) + 900px);
+    margin-left: -450px;
+    transform-origin: 50% 0;
+    transform: translate3d(0, 11rem, 700px) rotateX(-90deg);
+    background-image:
+      linear-gradient(rgb(155 123 255 / 0.35) 2px, transparent 2px),
+      linear-gradient(90deg, rgb(155 123 255 / 0.35) 2px, transparent 2px);
+    background-size: 80px 80px;
+  }
+
+  .beam {
+    position: absolute;
+    left: calc(50% - 3px);
+    top: -48px;
+    display: block;
+    width: 6px;
+    height: calc(100% + 48px);
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--color-aqua) 0 16px,
+      transparent 16px 48px
+    );
+    animation: beamFlow 0.8s linear infinite;
+    will-change: transform;
+  }
+
+  .packets span {
+    animation: packet 1.2s steps(2) infinite;
+  }
+
+  .packets span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .packets span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .packets span:nth-child(4) {
+    animation-delay: 0.6s;
+  }
+
+  /* Scene 4: the board starts laid back and rotates up to face the viewer.
+     `--q` reaches 1 a little past halfway so the result can be read while
+     the scene is still pinned. */
+  .boardScene {
+    --q: min(1, calc(var(--p) * 1.7));
+  }
+
+  .board {
+    transform: translate3d(0, calc((1 - var(--q)) * 10vh), 0)
+      rotateX(calc((1 - var(--q)) * 48deg))
+      rotateZ(calc((1 - var(--q)) * -9deg))
+      scale(calc(0.84 + var(--q) * 0.16));
+  }
+
+  .boardLayer {
+    transform: translateZ(calc(var(--z) * (1.4 - var(--q))));
+  }
+
+  /* Wipe the chart in from the left as the board settles. */
+  .boardChart svg {
+    clip-path: inset(0 calc((1 - min(1, var(--p) * 1.9)) * 100%) 0 0);
+  }
+
+  .specCard:hover {
+    transform: translate3d(0, -6px, 30px) rotateX(4deg);
+  }
+
+  .ctaScene {
+    --q: min(1, calc(var(--p) * 2));
+  }
+
+  .wordmark {
+    transform: rotateX(calc((1 - var(--q)) * 38deg))
+      scale(calc(0.9 + var(--q) * 0.1));
+  }
+}
+
+/* Small screens: lighter scenes, fewer decorative objects. */
+@media (max-width: 767px) {
+  .station {
+    --w: 250px;
+    --h: 185px;
+    --d: 80px;
+    --spread: 0.55;
+  }
+
+  .chipOptional,
+  .orbit {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  /* The hero and dashboard don't fit a phone screen while pinned, so they
+     scroll normally here; their transforms still follow scroll progress. */
+  .heroScene,
+  .boardScene {
+    height: auto;
+  }
+
+  .heroScene .pin,
+  .boardScene .pin {
+    position: relative;
+    height: auto;
+  }
+
+  .heroCopy,
+  .heroInside,
+  .heroScene[data-step="1"] .heroCopy,
+  .heroScene[data-step="1"] .heroInside {
+    grid-area: auto;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .heroInside {
+    margin-top: 2rem;
+  }
+
+  .scrollCue {
+    display: none;
+  }
+
+  .pipelineScene {
+    height: 380vh;
+  }
+
+  .hero {
+    gap: 1.5rem;
+    align-content: center;
+  }
+
+  .headline {
+    font-size: clamp(2.1rem, 10vw, 3rem);
+  }
+
+  .step {
+    display: none;
+  }
+
+  .pipelineScene[data-step="0"] .step:nth-child(1),
+  .pipelineScene[data-step="1"] .step:nth-child(2),
+  .pipelineScene[data-step="2"] .step:nth-child(3),
+  .pipelineScene[data-step="3"] .step:nth-child(4),
+  .pipelineScene[data-step="4"] .step:nth-child(5) {
+    display: grid;
+  }
+
+  .flyport {
+    height: 19rem;
+  }
+
+  .world {
+    --gap: 420px;
+  }
+
+  .flyPanel {
+    width: 16rem;
+    transform: translate3d(0, 0, calc(var(--i) * var(--gap) * -1));
+  }
+}

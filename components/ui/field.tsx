@@ -6,12 +6,12 @@ import type {
 } from "react";
 
 const controlStyles =
-  "block w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 disabled:opacity-60 dark:bg-zinc-900 dark:text-zinc-100";
+  "block w-full rounded-lg border bg-white/85 px-3 py-2 text-sm text-haze-950 shadow-[inset_0_1px_2px_rgb(21_16_34/0.06)] transition placeholder:text-haze-400 focus:border-lavender disabled:opacity-60 dark:bg-haze-950/60 dark:text-haze-50";
 
 function borderFor(error?: string) {
   return error
     ? "border-red-500 dark:border-red-500"
-    : "border-zinc-300 dark:border-zinc-700";
+    : "border-haze-300 dark:border-haze-700";
 }
 
 type FieldProps = {
@@ -33,7 +33,7 @@ export function Field({ id, label, error, hint, children }: FieldProps) {
       {hint && !error && (
         <p
           id={`${id}-hint`}
-          className="text-xs text-zinc-500 dark:text-zinc-400"
+          className="text-xs text-haze-500 dark:text-haze-400"
         >
           {hint}
         </p>

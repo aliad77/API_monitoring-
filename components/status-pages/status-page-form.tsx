@@ -156,12 +156,12 @@ export function StatusPageForm({
 
       <fieldset>
         <legend className="text-sm font-medium">Monitors to show</legend>
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs text-haze-500 dark:text-haze-400">
           Visitors see each monitor&apos;s name, status, uptime and incident
           times — never its URL or settings.
         </p>
         {monitors.length === 0 ? (
-          <p className="mt-3 text-sm text-zinc-500">
+          <p className="mt-3 text-sm text-haze-500">
             You don&apos;t have any monitors yet.
           </p>
         ) : (
@@ -173,7 +173,7 @@ export function StatusPageForm({
               >
                 <input
                   type="checkbox"
-                  className="size-4 rounded border-zinc-300 dark:border-zinc-700"
+                  className="size-4 rounded border-haze-300 dark:border-haze-700"
                   checked={values.monitorIds.includes(monitor.id)}
                   onChange={() => toggleMonitor(monitor.id)}
                 />

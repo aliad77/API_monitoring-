@@ -4,7 +4,120 @@
 
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-unbounded), var(--font-inter), sans-serif;
+  --font-pixel: var(--font-silkscreen), ui-monospace, monospace;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Brand accents. Lavender leads; the others are used sparingly. */
+  --color-lavender: #9b7bff;
+  --color-lavender-deep: #6b4be0;
+  --color-candy: #ff9dd9;
+  --color-aqua: #64e9ff;
+  --color-acid: #c8ff71;
+  --color-paper: #f7f5ff;
+  --color-void: #151022;
+
+  /* Purple-tinted neutrals that replace Tailwind's zinc throughout the app.
+     500 is dark enough for small text on white and on haze-50. */
+  --color-haze-50: #f7f5ff;
+  --color-haze-100: #efebfb;
+  --color-haze-200: #e1daf5;
+  --color-haze-300: #cbc1e8;
+  --color-haze-400: #a79bc9;
+  --color-haze-500: #776b9c;
+  --color-haze-600: #5f5480;
+  --color-haze-700: #463d63;
+  --color-haze-800: #2e2645;
+  --color-haze-900: #1e1830;
+  --color-haze-950: #151022;
+}
+
+/* Surface tokens switch with the theme so utilities below work in both. */
+:root {
+  --surface: rgb(255 255 255 / 0.74);
+  --surface-solid: #ffffff;
+  --edge: rgb(107 75 224 / 0.18);
+  --highlight: rgb(255 255 255 / 0.95);
+  --glow: rgb(107 75 224 / 0.28);
+  --grid-line: rgb(107 75 224 / 0.07);
+  --canvas: #f4f1ff;
+  --chart-line: #6b4be0;
+}
+
+.dark {
+  --surface: rgb(30 24 48 / 0.72);
+  --surface-solid: #1e1830;
+  --edge: rgb(155 123 255 / 0.2);
+  --highlight: rgb(255 255 255 / 0.07);
+  --glow: rgb(155 123 255 / 0.4);
+  --grid-line: rgb(155 123 255 / 0.07);
+  --canvas: #151022;
+  --chart-line: #9b7bff;
+}
+
+/* Glossy translucent panel used for cards, windows and the sidebar. */
+@utility glass {
+  background-color: var(--surface);
+  border: 1px solid var(--edge);
+  box-shadow:
+    inset 0 1px 0 var(--highlight),
+    0 18px 40px -28px var(--glow);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Brushed-chrome fill for secondary buttons and small hardware details. */
+@utility chrome {
+  color: var(--color-void);
+  background-image: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e9e4f8 42%,
+    #c9c0e2 52%,
+    #f1edfd 100%
+  );
+  border: 1px solid #a99fc8;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -2px 0 rgb(21 16 34 / 0.1),
+    0 1px 2px rgb(21 16 34 / 0.18);
+}
+
+@utility chrome-text {
+  background-image: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #d9d2f2 38%,
+    #8f82b8 50%,
+    #efeafc 62%,
+    #b9addb 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 8-bit style border: four offset shadows leave the corners notched. */
+@utility pixel-frame {
+  box-shadow:
+    0 -2px 0 0 var(--pixel-color, currentColor),
+    0 2px 0 0 var(--pixel-color, currentColor),
+    -2px 0 0 0 var(--pixel-color, currentColor),
+    2px 0 0 0 var(--pixel-color, currentColor);
+}
+
+@utility grid-canvas {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@utility dither {
+  background-image: radial-gradient(
+    rgb(155 123 255 / 0.16) 1px,
+    transparent 1.2px
+  );
+  background-size: 4px 4px;
 }
 
 @layer base {
@@ -17,10 +130,87 @@
   }
 
   body {
-    @apply bg-zinc-50 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
+    @apply text-haze-950 antialiased dark:text-haze-50;
+    background-color: var(--canvas);
+  }
+
+  /* Pastel glow behind every page. A fixed pseudo-element is composited
+     once, unlike `background-attachment: fixed`, which repaints on scroll. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        60rem 40rem at 85% -10%,
+        rgb(155 123 255 / 0.22),
+        transparent 60%
+      ),
+      radial-gradient(
+        50rem 36rem at -10% 110%,
+        rgb(100 233 255 / 0.14),
+        transparent 60%
+      ),
+      radial-gradient(
+        40rem 30rem at 50% 50%,
+        rgb(255 157 217 / 0.08),
+        transparent 70%
+      );
   }
 
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-sky-500;
+    @apply outline-2 outline-offset-2 outline-lavender;
+  }
+
+  ::selection {
+    background-color: rgb(155 123 255 / 0.35);
+  }
+}
+
+.chart-glow .recharts-area-curve {
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+
+@keyframes pixel-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes chart-reveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-pixel-blink {
+    animation: pixel-blink 1.6s steps(2, jump-none) infinite;
+  }
+
+  .animate-chart-reveal {
+    animation: chart-reveal 0.9s steps(24, end) both;
+  }
+}
+
+@keyframes pixel-pulse-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  60%,
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pixel-pulse-trace {
+    stroke-dasharray: 1;
+    animation: pixel-pulse-draw 2.4s steps(20, end) infinite;
   }
 }

@@ -1,16 +1,19 @@
-import { Activity } from "lucide-react";
 import Link from "next/link";
+import { PixelSprite } from "@/components/pixel/pixel-sprite";
+import { heart } from "@/components/pixel/sprites";
 
 export function Logo({ href = "/" }: { href?: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 font-semibold tracking-tight"
+      className="group inline-flex items-center gap-2.5 rounded-lg"
     >
-      <span className="flex size-7 items-center justify-center rounded-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">
-        <Activity className="size-4" aria-hidden />
+      <span className="chrome flex size-8 items-center justify-center rounded-lg transition-transform group-hover:-rotate-6">
+        <PixelSprite sprite={heart} scale={3} />
       </span>
-      Pulse
+      <span className="font-display text-base font-bold tracking-tight">
+        Pulse
+      </span>
     </Link>
   );
 }

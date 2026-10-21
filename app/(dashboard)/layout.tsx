@@ -20,7 +20,7 @@ export default async function DashboardLayout({
   if (!user) redirect("/login");
 
   return (
-    <div className="lg:flex">
+    <div className="grid-canvas min-h-screen lg:flex">
       <AppNav user={user} unreadCount={unreadCount} />
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8">
         <div className="mx-auto max-w-6xl">{children}</div>
