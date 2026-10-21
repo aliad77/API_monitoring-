@@ -5,19 +5,46 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+# Each check is its own job so one failure doesn't hide the others.
 jobs:
-  static-checks:
-    name: Format, lint and type check
+  format:
+    name: Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      # No lockfile is committed yet (see README), so `npm ci` can't be used.
-      - run: npm install
+          cache: npm
+      - run: npm ci
       - run: npm run format:check
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npm run lint
+
+  typecheck:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      # `npm ci` runs `prisma generate`, which the type check depends on.
+      - run: npm ci
       - run: npm run typecheck
 
   test:
@@ -42,10 +69,11 @@ jobs:
       TEST_DATABASE_URL: postgresql://pulse:pulse@localhost:5432/pulse_test
       AUTH_SECRET: ci-only-not-a-real-secret
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: npm install
+          cache: npm
+      - run: npm ci
       - run: npm run db:deploy
       - run: npm test

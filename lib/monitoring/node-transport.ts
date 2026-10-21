@@ -7,7 +7,8 @@ import type { ResolvedAddress } from "./http-check";
 export type TransportRequest = {
   url: URL;
   method: "GET" | "HEAD";
-  address: ResolvedAddress;
+  /** Every address the hostname resolved to; all have passed the policy. */
+  addresses: ResolvedAddress[];
   signal: AbortSignal;
 };
 
@@ -30,20 +31,26 @@ type LookupCallback = (
 ) => void;
 
 /**
- * A DNS lookup that always answers with the address that already passed the
+ * A DNS lookup that always answers with the addresses that already passed the
  * URL policy. Node would otherwise do its own lookup, which a DNS rebinding
  * attack could answer with a private IP.
+ *
+ * All validated addresses are returned (not just the first) so Node's
+ * happy-eyeballs can fall back from IPv6 to IPv4 on hosts without IPv6
+ * routing, instead of reporting a dual-stack site as unreachable.
  */
-function pinnedLookup(address: ResolvedAddress): LookupFunction {
+function pinnedLookup(addresses: ResolvedAddress[]): LookupFunction {
   const lookup = (
     _hostname: string,
     options: { all?: boolean },
     callback: LookupCallback,
   ) => {
     if (options.all) {
-      callback(null, [{ address: address.address, family: address.family }]);
+      callback(null, addresses);
     } else {
-      callback(null, address.address, address.family);
+      const preferred =
+        addresses.find((entry) => entry.family === 4) ?? addresses[0];
+      callback(null, preferred.address, preferred.family);
     }
   };
   // Node calls `lookup` with `all: true` when happy-eyeballs is enabled (the
@@ -53,14 +60,19 @@ function pinnedLookup(address: ResolvedAddress): LookupFunction {
 }
 
 /**
- * Performs a single HTTP request (no redirect handling) against an address
- * that has already been approved by the URL policy.
+ * Performs a single HTTP request (no redirect handling) against addresses
+ * that have already been approved by the URL policy.
  */
-export const nodeTransport: Transport = ({ url, method, address, signal }) => {
+export const nodeTransport: Transport = ({
+  url,
+  method,
+  addresses,
+  signal,
+}) => {
   const options: https.RequestOptions = {
     method,
     signal,
-    lookup: pinnedLookup(address),
+    lookup: pinnedLookup(addresses),
     // A fresh connection per check: no shared sockets, no cookies, and only
     // these headers are ever sent to monitored targets. For HTTPS the
     // certificate is still verified against the original hostname.

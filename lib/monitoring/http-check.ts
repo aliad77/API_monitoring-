@@ -64,7 +64,7 @@ export async function runHttpCheck(
         throw new CheckError(policy.reason);
       }
 
-      const address = await resolvePublicAddress(
+      const addresses = await resolvePublicAddresses(
         policy.hostname,
         dependencies.resolve,
         controller.signal,
@@ -73,7 +73,7 @@ export async function runHttpCheck(
       const response = await dependencies.transport({
         url: policy.url,
         method: target.method,
-        address,
+        addresses,
         signal: controller.signal,
       });
 
@@ -118,14 +118,14 @@ export async function runHttpCheck(
   }
 }
 
-async function resolvePublicAddress(
+async function resolvePublicAddresses(
   hostname: string,
   resolve: Resolver,
   signal: AbortSignal,
-): Promise<ResolvedAddress> {
+): Promise<ResolvedAddress[]> {
   if (isIP(hostname)) {
     // Literal addresses were already checked by validateMonitorUrl.
-    return { address: hostname, family: isIP(hostname) === 6 ? 6 : 4 };
+    return [{ address: hostname, family: isIP(hostname) === 6 ? 6 : 4 }];
   }
 
   const addresses = await abortable(resolve(hostname), signal);
@@ -139,7 +139,7 @@ async function resolvePublicAddress(
       `${hostname} resolves to a private or reserved address`,
     );
   }
-  return addresses[0];
+  return addresses;
 }
 
 function abortable<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {

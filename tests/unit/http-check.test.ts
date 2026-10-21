@@ -58,9 +58,23 @@ describe("runHttpCheck", () => {
     });
 
     const request = vi.mocked(transport).mock.calls[0][0] as TransportRequest;
-    expect(request.address).toEqual(PUBLIC);
+    expect(request.addresses).toEqual([PUBLIC]);
     expect(request.url.hostname).toBe("api.example.com");
     expect(request.method).toBe("GET");
+  });
+
+  it("passes every validated address so the connection can fall back", async () => {
+    const ipv6: ResolvedAddress = { address: "2606:4700:4700::1111", family: 6 };
+    const transport = transportReturning(200);
+    await runHttpCheck(target, {
+      resolve: resolverFor({ "api.example.com": [ipv6, PUBLIC] }),
+      transport,
+    });
+
+    expect(vi.mocked(transport).mock.calls[0][0].addresses).toEqual([
+      ipv6,
+      PUBLIC,
+    ]);
   });
 
   it("detects an unexpected status code", async () => {
@@ -170,7 +184,9 @@ describe("runHttpCheck", () => {
 
       expect(outcome.ok).toBe(true);
       expect(resolve).toHaveBeenCalledTimes(1);
-      expect(vi.mocked(transport).mock.calls[0][0].address).toEqual(PUBLIC);
+      expect(vi.mocked(transport).mock.calls[0][0].addresses).toEqual([
+        PUBLIC,
+      ]);
     });
 
     it("follows redirects to public hosts and validates every hop", async () => {
@@ -188,9 +204,9 @@ describe("runHttpCheck", () => {
 
       expect(outcome).toMatchObject({ ok: true, statusCode: 200 });
       expect(resolve).toHaveBeenCalledWith("www.example.org");
-      expect(vi.mocked(transport).mock.calls[1][0].address).toEqual(
+      expect(vi.mocked(transport).mock.calls[1][0].addresses).toEqual([
         OTHER_PUBLIC,
-      );
+      ]);
     });
 
     it("blocks a redirect to a private IP literal", async () => {
