@@ -64,7 +64,10 @@ describe("runHttpCheck", () => {
   });
 
   it("passes every validated address so the connection can fall back", async () => {
-    const ipv6: ResolvedAddress = { address: "2606:4700:4700::1111", family: 6 };
+    const ipv6: ResolvedAddress = {
+      address: "2606:4700:4700::1111",
+      family: 6,
+    };
     const transport = transportReturning(200);
     await runHttpCheck(target, {
       resolve: resolverFor({ "api.example.com": [ipv6, PUBLIC] }),
@@ -184,9 +187,7 @@ describe("runHttpCheck", () => {
 
       expect(outcome.ok).toBe(true);
       expect(resolve).toHaveBeenCalledTimes(1);
-      expect(vi.mocked(transport).mock.calls[0][0].addresses).toEqual([
-        PUBLIC,
-      ]);
+      expect(vi.mocked(transport).mock.calls[0][0].addresses).toEqual([PUBLIC]);
     });
 
     it("follows redirects to public hosts and validates every hop", async () => {
