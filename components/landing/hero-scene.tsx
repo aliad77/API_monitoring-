@@ -28,9 +28,9 @@ export function HeroScene({ signedIn }: { signedIn: boolean }) {
                 <span className={styles.iridescent}>Always in the loop.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg text-haze-600 dark:text-haze-300">
-                Pulse checks your websites and APIs on a schedule, records
-                every status code and response time, and opens an incident the
-                moment something goes down.
+                Pulse checks your websites and APIs on a schedule, records every
+                status code and response time, and opens an incident the moment
+                something goes down.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 {signedIn ? (

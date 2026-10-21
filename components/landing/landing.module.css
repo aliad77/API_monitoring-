@@ -1145,8 +1145,7 @@
   .board {
     transform: translate3d(0, calc((1 - var(--q)) * 10vh), 0)
       rotateX(calc((1 - var(--q)) * 48deg))
-      rotateZ(calc((1 - var(--q)) * -9deg))
-      scale(calc(0.84 + var(--q) * 0.16));
+      rotateZ(calc((1 - var(--q)) * -9deg)) scale(calc(0.84 + var(--q) * 0.16));
   }
 
   .boardLayer {

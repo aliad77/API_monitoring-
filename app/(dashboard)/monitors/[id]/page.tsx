@@ -72,7 +72,9 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
 
       <dl className="glass grid grid-cols-2 gap-4 rounded-2xl p-5 text-sm sm:grid-cols-4">
         <div>
-          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">Last checked</dt>
+          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+            Last checked
+          </dt>
           <dd className="mt-1 font-medium">
             {monitor.lastCheckedAt
               ? formatRelative(monitor.lastCheckedAt)
@@ -80,19 +82,25 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
           </dd>
         </div>
         <div>
-          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">Last response</dt>
+          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+            Last response
+          </dt>
           <dd className="mt-1 font-medium">
             {formatResponseTime(monitor.lastResponseTimeMs)}
           </dd>
         </div>
         <div>
-          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">Interval</dt>
+          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+            Interval
+          </dt>
           <dd className="mt-1 font-medium">
             {formatInterval(monitor.intervalSeconds)}
           </dd>
         </div>
         <div>
-          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">Expects</dt>
+          <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+            Expects
+          </dt>
           <dd className="mt-1 font-medium">
             HTTP {monitor.expectedStatus} within {monitor.timeoutMs / 1000}s
           </dd>
@@ -111,13 +119,17 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
               </dd>
             </div>
             <div>
-              <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">Avg response</dt>
+              <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+                Avg response
+              </dt>
               <dd className="mt-1 font-display text-xl font-semibold tabular-nums">
                 {formatResponseTime(stats.avgResponseTimeMs)}
               </dd>
             </div>
             <div>
-              <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">Checks</dt>
+              <dt className="font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+                Checks
+              </dt>
               <dd className="mt-1 font-display text-xl font-semibold tabular-nums">
                 {stats.totalChecks}
               </dd>

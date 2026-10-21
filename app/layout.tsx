@@ -3,7 +3,10 @@ import { Inter, Silkscreen, Unbounded } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const unbounded = Unbounded({ subsets: ["latin"], variable: "--font-unbounded" });
+const unbounded = Unbounded({
+  subsets: ["latin"],
+  variable: "--font-unbounded",
+});
 // Pixel face for short labels, badges and counters only, never paragraphs.
 const silkscreen = Silkscreen({
   subsets: ["latin"],
