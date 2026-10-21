@@ -12,18 +12,29 @@ import { Field, FormError, Input } from "@/components/ui/field";
 
 function Success({ message }: { message?: string }) {
   return (
-    <p aria-live="polite" className="text-sm text-emerald-700 dark:text-emerald-400">
+    <p
+      aria-live="polite"
+      className="text-sm text-emerald-700 dark:text-emerald-400"
+    >
       {message}
     </p>
   );
 }
 
 export function ProfileForm({ name }: { name: string }) {
-  const [state, action, pending] = useActionState<SettingsFormState, FormData>(updateProfile, {});
+  const [state, action, pending] = useActionState<SettingsFormState, FormData>(
+    updateProfile,
+    {},
+  );
   return (
     <form action={action} className="space-y-4" noValidate>
       <Field id="name" label="Name" error={state.fieldErrors?.name}>
-        <Input id="name" defaultValue={name} autoComplete="name" error={state.fieldErrors?.name} />
+        <Input
+          id="name"
+          defaultValue={name}
+          autoComplete="name"
+          error={state.fieldErrors?.name}
+        />
       </Field>
       <div className="flex items-center gap-4">
         <Button type="submit" disabled={pending}>
@@ -36,14 +47,31 @@ export function ProfileForm({ name }: { name: string }) {
 }
 
 export function PasswordForm() {
-  const [state, action, pending] = useActionState<SettingsFormState, FormData>(changePassword, {});
+  const [state, action, pending] = useActionState<SettingsFormState, FormData>(
+    changePassword,
+    {},
+  );
   const errors = state.fieldErrors ?? {};
   return (
     <form action={action} className="space-y-4" noValidate>
-      <Field id="currentPassword" label="Current password" error={errors.currentPassword}>
-        <Input id="currentPassword" type="password" autoComplete="current-password" error={errors.currentPassword} />
+      <Field
+        id="currentPassword"
+        label="Current password"
+        error={errors.currentPassword}
+      >
+        <Input
+          id="currentPassword"
+          type="password"
+          autoComplete="current-password"
+          error={errors.currentPassword}
+        />
       </Field>
-      <Field id="newPassword" label="New password" error={errors.newPassword} hint="At least 8 characters.">
+      <Field
+        id="newPassword"
+        label="New password"
+        error={errors.newPassword}
+        hint="At least 8 characters."
+      >
         <Input
           id="newPassword"
           type="password"
@@ -63,20 +91,31 @@ export function PasswordForm() {
 }
 
 export function DeleteAccountForm() {
-  const [state, action, pending] = useActionState<SettingsFormState, FormData>(deleteAccount, {});
+  const [state, action, pending] = useActionState<SettingsFormState, FormData>(
+    deleteAccount,
+    {},
+  );
   return (
     <form
       action={action}
       className="space-y-4"
       noValidate
       onSubmit={(event) => {
-        if (!window.confirm("Permanently delete your account and all monitoring data?")) {
+        if (
+          !window.confirm(
+            "Permanently delete your account and all monitoring data?",
+          )
+        ) {
           event.preventDefault();
         }
       }}
     >
       <FormError message={state.error} />
-      <Field id="confirmPassword" label="Confirm with your password" error={state.fieldErrors?.confirmPassword}>
+      <Field
+        id="confirmPassword"
+        label="Confirm with your password"
+        error={state.fieldErrors?.confirmPassword}
+      >
         <Input
           id="confirmPassword"
           type="password"

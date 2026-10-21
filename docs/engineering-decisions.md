@@ -58,12 +58,12 @@ to revisit.
 **and** requires the lease token to still match. That single condition handles
 several races:
 
-| Situation | Effect of the guard |
-| --- | --- |
-| Two completions for the same claim | The second waits on the row lock, then sees the token cleared and is discarded. |
+| Situation                                             | Effect of the guard                                                                                      |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Two completions for the same claim                    | The second waits on the row lock, then sees the token cleared and is discarded.                          |
 | Lease expired, another worker re-claimed and finished | The old worker's token no longer matches; its result is discarded and cannot overwrite the newer status. |
-| User edits or pauses the monitor mid-check | The API clears the lease, so a result for the old URL or settings is discarded. |
-| Monitor deleted mid-check | No row matches; the result is discarded. |
+| User edits or pauses the monitor mid-check            | The API clears the lease, so a result for the old URL or settings is discarded.                          |
+| Monitor deleted mid-check                             | No row matches; the result is discarded.                                                                 |
 
 Incident transitions are driven by whether an **open incident row** exists,
 not by comparing old and new status fields. Repeated failures therefore never
@@ -103,7 +103,7 @@ usable to reach internal services. The defences are layered:
    be public. URL parsing normalises tricks such as `http://2130706433/` and
    `http://0x7f000001/` to `127.0.0.1` before the check.
 2. **DNS validation before connecting** (`lib/monitoring/http-check.ts`): the
-   hostname is resolved and *every* returned address is checked. IPv4 private,
+   hostname is resolved and _every_ returned address is checked. IPv4 private,
    loopback, link-local (including `169.254.169.254`), CGNAT, multicast and
    reserved ranges are blocked. IPv6 is allowed only inside global unicast
    `2000::/3`, minus documentation, 6to4 and Teredo ranges. This also blocks

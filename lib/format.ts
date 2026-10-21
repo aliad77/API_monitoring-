@@ -1,6 +1,8 @@
 import { CHECK_INTERVALS } from "@/lib/monitoring/options";
 
-const relativeFormatter = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+const relativeFormatter = new Intl.RelativeTimeFormat("en", {
+  numeric: "auto",
+});
 
 const units: [Intl.RelativeTimeFormatUnit, number][] = [
   ["day", 86_400_000],

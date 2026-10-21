@@ -1,4 +1,3 @@
-
 export type FieldErrors = Record<string, string>;
 
 export type ApiResult<T> =
@@ -14,10 +13,12 @@ export async function apiRequest<T = unknown>(
   try {
     const response = await fetch(url, {
       method,
-      headers: body === undefined ? undefined : { "content-type": "application/json" },
+      headers:
+        body === undefined ? undefined : { "content-type": "application/json" },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
-    const payload = response.status === 204 ? null : await response.json().catch(() => null);
+    const payload =
+      response.status === 204 ? null : await response.json().catch(() => null);
 
     if (!response.ok) {
       return {
@@ -28,6 +29,10 @@ export async function apiRequest<T = unknown>(
     }
     return { ok: true, data: payload as T };
   } catch {
-    return { ok: false, error: "Network error. Check your connection and try again.", fieldErrors: {} };
+    return {
+      ok: false,
+      error: "Network error. Check your connection and try again.",
+      fieldErrors: {},
+    };
   }
 }

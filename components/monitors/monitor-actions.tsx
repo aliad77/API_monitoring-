@@ -16,17 +16,26 @@ export function MonitorActions({ monitor }: MonitorActionsProps) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  async function run(action: () => Promise<{ ok: boolean; error?: string }>, success?: string) {
+  async function run(
+    action: () => Promise<{ ok: boolean; error?: string }>,
+    success?: string,
+  ) {
     setBusy(true);
     setMessage(null);
     const result = await action();
     setBusy(false);
-    setMessage(result.ok ? (success ?? null) : (result.error ?? "Something went wrong."));
+    setMessage(
+      result.ok ? (success ?? null) : (result.error ?? "Something went wrong."),
+    );
     if (result.ok) router.refresh();
   }
 
   function toggleActive() {
-    return run(() => apiRequest(`/api/monitors/${monitor.id}`, "PATCH", { isActive: !monitor.isActive }));
+    return run(() =>
+      apiRequest(`/api/monitors/${monitor.id}`, "PATCH", {
+        isActive: !monitor.isActive,
+      }),
+    );
   }
 
   function checkNow() {
@@ -37,7 +46,11 @@ export function MonitorActions({ monitor }: MonitorActionsProps) {
   }
 
   async function remove() {
-    if (!window.confirm(`Delete "${monitor.name}"? Its check history and incidents will be removed.`)) {
+    if (
+      !window.confirm(
+        `Delete "${monitor.name}"? Its check history and incidents will be removed.`,
+      )
+    ) {
       return;
     }
     setBusy(true);
@@ -55,16 +68,33 @@ export function MonitorActions({ monitor }: MonitorActionsProps) {
     <div className="flex flex-col items-start gap-2 sm:items-end">
       <div className="flex flex-wrap gap-2">
         {monitor.isActive && (
-          <Button variant="secondary" size="sm" onClick={checkNow} disabled={busy}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={checkNow}
+            disabled={busy}
+          >
             <RefreshCw className="size-4" aria-hidden />
             Check now
           </Button>
         )}
-        <Button variant="secondary" size="sm" onClick={toggleActive} disabled={busy}>
-          {monitor.isActive ? <Pause className="size-4" aria-hidden /> : <Play className="size-4" aria-hidden />}
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={toggleActive}
+          disabled={busy}
+        >
+          {monitor.isActive ? (
+            <Pause className="size-4" aria-hidden />
+          ) : (
+            <Play className="size-4" aria-hidden />
+          )}
           {monitor.isActive ? "Pause" : "Resume"}
         </Button>
-        <Link href={`/monitors/${monitor.id}/edit`} className={buttonStyles("secondary", "sm")}>
+        <Link
+          href={`/monitors/${monitor.id}/edit`}
+          className={buttonStyles("secondary", "sm")}
+        >
           <Pencil className="size-4" aria-hidden />
           Edit
         </Link>
@@ -73,7 +103,10 @@ export function MonitorActions({ monitor }: MonitorActionsProps) {
           Delete
         </Button>
       </div>
-      <p aria-live="polite" className="text-xs text-zinc-500 dark:text-zinc-400">
+      <p
+        aria-live="polite"
+        className="text-xs text-zinc-500 dark:text-zinc-400"
+      >
         {message}
       </p>
     </div>

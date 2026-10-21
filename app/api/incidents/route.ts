@@ -8,7 +8,8 @@ export async function GET(request: Request) {
 
   const searchParams = new URL(request.url).searchParams;
   const status = searchParams.get("status");
-  const filter: IncidentFilter = status === "open" || status === "resolved" ? status : "all";
+  const filter: IncidentFilter =
+    status === "open" || status === "resolved" ? status : "all";
 
   const page = await listIncidents(userId, {
     cursor: searchParams.get("cursor"),

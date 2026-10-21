@@ -1,8 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { calculateUptime, summarizeSeries, type SeriesPoint } from "@/lib/data/stats";
+import {
+  calculateUptime,
+  summarizeSeries,
+  type SeriesPoint,
+} from "@/lib/data/stats";
 
-function point(total: number, okCount: number, avgResponseTimeMs: number | null, timedCount = total): SeriesPoint {
-  return { bucketStart: new Date(), total, okCount, timedCount, avgResponseTimeMs };
+function point(
+  total: number,
+  okCount: number,
+  avgResponseTimeMs: number | null,
+  timedCount = total,
+): SeriesPoint {
+  return {
+    bucketStart: new Date(),
+    total,
+    okCount,
+    timedCount,
+    avgResponseTimeMs,
+  };
 }
 
 describe("calculateUptime", () => {
@@ -37,6 +52,10 @@ describe("summarizeSeries", () => {
   });
 
   it("returns empty values for an empty period", () => {
-    expect(summarizeSeries([])).toEqual({ totalChecks: 0, uptime: null, avgResponseTimeMs: null });
+    expect(summarizeSeries([])).toEqual({
+      totalChecks: 0,
+      uptime: null,
+      avgResponseTimeMs: null,
+    });
   });
 });

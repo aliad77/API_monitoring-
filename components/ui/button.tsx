@@ -28,6 +28,18 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   size?: Size;
 };
 
-export function Button({ variant, size, className = "", type = "button", ...props }: ButtonProps) {
-  return <button type={type} className={`${buttonStyles(variant, size)} ${className}`} {...props} />;
+export function Button({
+  variant,
+  size,
+  className = "",
+  type = "button",
+  ...props
+}: ButtonProps) {
+  return (
+    <button
+      type={type}
+      className={`${buttonStyles(variant, size)} ${className}`}
+      {...props}
+    />
+  );
 }

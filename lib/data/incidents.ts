@@ -9,7 +9,9 @@ export const incidentSelect = {
   monitor: { select: { id: true, name: true } },
 } satisfies Prisma.IncidentSelect;
 
-export type IncidentView = Prisma.IncidentGetPayload<{ select: typeof incidentSelect }>;
+export type IncidentView = Prisma.IncidentGetPayload<{
+  select: typeof incidentSelect;
+}>;
 
 export type IncidentFilter = "all" | "open" | "resolved";
 
@@ -20,7 +22,12 @@ export async function listIncidents(
     limit,
     filter = "all",
     monitorId,
-  }: { cursor?: string | null; limit: number; filter?: IncidentFilter; monitorId?: string },
+  }: {
+    cursor?: string | null;
+    limit: number;
+    filter?: IncidentFilter;
+    monitorId?: string;
+  },
 ) {
   const where: Prisma.IncidentWhereInput = {
     monitor: { userId },

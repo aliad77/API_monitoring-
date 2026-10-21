@@ -24,16 +24,16 @@ No screenshots yet. I'll add real screenshots of the running application once it
 
 ## Tech stack
 
-| Area | Choice |
-| --- | --- |
-| Framework | Next.js 15 (App Router), React 19, TypeScript |
-| Styling | Tailwind CSS 4, Lucide icons, Recharts |
-| Database | PostgreSQL 16, Prisma ORM |
-| Auth | Auth.js v5 (credentials provider, JWT sessions), bcrypt |
-| Validation | Zod |
+| Area       | Choice                                                   |
+| ---------- | -------------------------------------------------------- |
+| Framework  | Next.js 15 (App Router), React 19, TypeScript            |
+| Styling    | Tailwind CSS 4, Lucide icons, Recharts                   |
+| Database   | PostgreSQL 16, Prisma ORM                                |
+| Auth       | Auth.js v5 (credentials provider, JWT sessions), bcrypt  |
+| Validation | Zod                                                      |
 | Monitoring | Standalone Node.js worker using `node:http`/`node:https` |
-| Testing | Vitest, React Testing Library |
-| Tooling | ESLint, Prettier, Docker Compose, GitHub Actions |
+| Testing    | Vitest, React Testing Library                            |
+| Tooling    | ESLint, Prettier, Docker Compose, GitHub Actions         |
 
 ## Architecture
 
@@ -106,7 +106,7 @@ These are covered in more depth in [docs/engineering-decisions.md](docs/engineer
 
 ## Security
 
-- **SSRF:** the worker allows only http/https URLs and rejects URLs with embedded credentials. It also rejects localhost, `.local`, `.internal` and single-label hostnames. Before connecting, it resolves DNS and rejects the host if *any* address is private, loopback, link-local, CGNAT, multicast or reserved. IPv6 is limited to global unicast. The connection is then pinned to the validated IP through a custom `lookup` to defeat DNS rebinding. Every redirect hop goes through the same checks, and the response body is never downloaded.
+- **SSRF:** the worker allows only http/https URLs and rejects URLs with embedded credentials. It also rejects localhost, `.local`, `.internal` and single-label hostnames. Before connecting, it resolves DNS and rejects the host if _any_ address is private, loopback, link-local, CGNAT, multicast or reserved. IPv6 is limited to global unicast. The connection is then pinned to the validated IP through a custom `lookup` to defeat DNS rebinding. Every redirect hop goes through the same checks, and the response body is never downloaded.
 - **No credential leakage:** checks use a fresh connection with only `User-Agent` and `Accept` headers. The web app never makes outbound requests to user URLs.
 - **Limits:** each user can have at most 25 monitors and 5 status pages. User-triggered checks must be at least 30 s apart, and intervals and timeouts come from fixed lists.
 - **Auth:** passwords are hashed with bcrypt. JWT sessions are signed with `AUTH_SECRET`. Server-side checks run on every page and API route.
@@ -117,21 +117,21 @@ These are covered in more depth in [docs/engineering-decisions.md](docs/engineer
 
 All endpoints except Auth.js's own require a session cookie. They return JSON and report errors as `{ "error": string, "fieldErrors"?: Record<string, string> }`.
 
-| Method | Path | Description |
-| --- | --- | --- |
-| GET | `/api/monitors` | List your monitors |
-| POST | `/api/monitors` | Create a monitor (201, 422 on validation, 403 at limit) |
-| GET | `/api/monitors/:id` | Get one monitor |
-| PATCH | `/api/monitors/:id` | Update fields, or `{ "isActive": false }` to pause |
-| DELETE | `/api/monitors/:id` | Delete monitor and its history (204) |
-| POST | `/api/monitors/:id/check` | Schedule a check as soon as allowed (202) |
-| GET | `/api/monitors/:id/checks?cursor=&limit=` | Paginated check history, newest first |
-| GET | `/api/incidents?status=open\|resolved&monitorId=&cursor=&limit=` | Paginated incidents |
-| GET | `/api/notifications` | Latest 50 notifications and unread count |
-| PATCH | `/api/notifications/:id` | `{ "read": boolean }` |
-| POST | `/api/notifications/read-all` | Mark all as read |
-| GET / POST | `/api/status-pages` | List / create status pages |
-| GET / PATCH / DELETE | `/api/status-pages/:id` | Manage one status page |
+| Method               | Path                                                             | Description                                             |
+| -------------------- | ---------------------------------------------------------------- | ------------------------------------------------------- |
+| GET                  | `/api/monitors`                                                  | List your monitors                                      |
+| POST                 | `/api/monitors`                                                  | Create a monitor (201, 422 on validation, 403 at limit) |
+| GET                  | `/api/monitors/:id`                                              | Get one monitor                                         |
+| PATCH                | `/api/monitors/:id`                                              | Update fields, or `{ "isActive": false }` to pause      |
+| DELETE               | `/api/monitors/:id`                                              | Delete monitor and its history (204)                    |
+| POST                 | `/api/monitors/:id/check`                                        | Schedule a check as soon as allowed (202)               |
+| GET                  | `/api/monitors/:id/checks?cursor=&limit=`                        | Paginated check history, newest first                   |
+| GET                  | `/api/incidents?status=open\|resolved&monitorId=&cursor=&limit=` | Paginated incidents                                     |
+| GET                  | `/api/notifications`                                             | Latest 50 notifications and unread count                |
+| PATCH                | `/api/notifications/:id`                                         | `{ "read": boolean }`                                   |
+| POST                 | `/api/notifications/read-all`                                    | Mark all as read                                        |
+| GET / POST           | `/api/status-pages`                                              | List / create status pages                              |
+| GET / PATCH / DELETE | `/api/status-pages/:id`                                          | Manage one status page                                  |
 
 Sign-in, registration and account settings use Server Actions, because they are tied to Auth.js's session handling.
 
@@ -154,7 +154,7 @@ npm run dev                   # web app on http://localhost:3000
 npm run worker                # in a second terminal: runs the checks
 ```
 
-Without the worker, monitors stay in the *Pending* state, because the web app never performs checks itself.
+Without the worker, monitors stay in the _Pending_ state, because the web app never performs checks itself.
 
 ### Demo data
 
@@ -162,15 +162,15 @@ Without the worker, monitors stay in the *Pending* state, because the web app ne
 
 ### Environment variables
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `DATABASE_URL` | yes | PostgreSQL connection string |
-| `AUTH_SECRET` | yes | Signs session tokens |
-| `AUTH_TRUST_HOST` | when self-hosting | Lets Auth.js trust the request host |
-| `TEST_DATABASE_URL` | for integration tests | Separate test database |
-| `SEED_DEMO_PASSWORD` | no | Demo account password |
-| `WORKER_BATCH_SIZE` | no | Monitors claimed per poll (default 10) |
-| `WORKER_POLL_INTERVAL_MS` | no | Idle poll interval (default 5000) |
+| Variable                  | Required              | Purpose                                |
+| ------------------------- | --------------------- | -------------------------------------- |
+| `DATABASE_URL`            | yes                   | PostgreSQL connection string           |
+| `AUTH_SECRET`             | yes                   | Signs session tokens                   |
+| `AUTH_TRUST_HOST`         | when self-hosting     | Lets Auth.js trust the request host    |
+| `TEST_DATABASE_URL`       | for integration tests | Separate test database                 |
+| `SEED_DEMO_PASSWORD`      | no                    | Demo account password                  |
+| `WORKER_BATCH_SIZE`       | no                    | Monitors claimed per poll (default 10) |
+| `WORKER_POLL_INTERVAL_MS` | no                    | Idle poll interval (default 5000)      |
 
 ## Testing
 

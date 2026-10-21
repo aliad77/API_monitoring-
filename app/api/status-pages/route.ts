@@ -1,4 +1,9 @@
-import { isUniqueViolation, jsonError, parseBody, unauthorized } from "@/lib/api";
+import {
+  isUniqueViolation,
+  jsonError,
+  parseBody,
+  unauthorized,
+} from "@/lib/api";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { listUserStatusPages, ownsAllMonitors } from "@/lib/data/status-pages";
@@ -21,11 +26,16 @@ export async function POST(request: Request) {
   if (response) return response;
 
   if (!(await ownsAllMonitors(userId, data.monitorIds))) {
-    return jsonError(422, "Select only your own monitors.", { monitorIds: "Unknown monitor" });
+    return jsonError(422, "Select only your own monitors.", {
+      monitorIds: "Unknown monitor",
+    });
   }
   const existing = await prisma.statusPage.count({ where: { userId } });
   if (existing >= MAX_STATUS_PAGES_PER_USER) {
-    return jsonError(403, `You can have at most ${MAX_STATUS_PAGES_PER_USER} status pages.`);
+    return jsonError(
+      403,
+      `You can have at most ${MAX_STATUS_PAGES_PER_USER} status pages.`,
+    );
   }
 
   try {
@@ -36,7 +46,10 @@ export async function POST(request: Request) {
         slug: data.slug,
         description: data.description || null,
         monitors: {
-          create: [...new Set(data.monitorIds)].map((monitorId, position) => ({ monitorId, position })),
+          create: [...new Set(data.monitorIds)].map((monitorId, position) => ({
+            monitorId,
+            position,
+          })),
         },
       },
       select: { id: true, slug: true, title: true },
@@ -44,9 +57,10 @@ export async function POST(request: Request) {
     return Response.json({ statusPage }, { status: 201 });
   } catch (error) {
     if (isUniqueViolation(error)) {
-      return jsonError(409, "That address is already taken.", { slug: "Already taken" });
+      return jsonError(409, "That address is already taken.", {
+        slug: "Already taken",
+      });
     }
     throw error;
   }
 }
-

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { DeleteAccountForm, PasswordForm, ProfileForm } from "@/components/settings/settings-forms";
+import {
+  DeleteAccountForm,
+  PasswordForm,
+  ProfileForm,
+} from "@/components/settings/settings-forms";
 import { Card, CardHeader } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/page-header";
 import { requireUserId } from "@/lib/auth/session";
@@ -37,7 +41,8 @@ export default async function SettingsPage() {
       <Card>
         <CardHeader title="Notifications" />
         <p className="p-5 text-sm text-zinc-600 dark:text-zinc-300">
-          Incident alerts are delivered in-app on the Notifications page. Email delivery is not implemented.
+          Incident alerts are delivered in-app on the Notifications page. Email
+          delivery is not implemented.
         </p>
       </Card>
 
@@ -45,7 +50,8 @@ export default async function SettingsPage() {
         <CardHeader title="Delete account" />
         <div className="space-y-4 p-5">
           <p className="text-sm text-zinc-600 dark:text-zinc-300">
-            Permanently removes your account, monitors, check history, incidents and status pages. This cannot be undone.
+            Permanently removes your account, monitors, check history, incidents
+            and status pages. This cannot be undone.
           </p>
           <DeleteAccountForm />
         </div>

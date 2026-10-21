@@ -8,7 +8,11 @@ import { findUserMonitor } from "@/lib/data/monitors";
 
 export const metadata: Metadata = { title: "Edit monitor" };
 
-export default async function EditMonitorPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditMonitorPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const userId = await requireUserId();
   const { id } = await params;
   const monitor = await findUserMonitor(userId, id);
@@ -16,7 +20,10 @@ export default async function EditMonitorPage({ params }: { params: Promise<{ id
 
   return (
     <div className="max-w-2xl">
-      <PageHeader title="Edit monitor" description="Saving re-checks the monitor with the new settings." />
+      <PageHeader
+        title="Edit monitor"
+        description="Saving re-checks the monitor with the new settings."
+      />
       <Card className="p-6">
         <MonitorForm
           monitorId={monitor.id}

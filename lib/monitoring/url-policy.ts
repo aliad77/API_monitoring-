@@ -54,8 +54,7 @@ export function isBlockedAddress(address: string): boolean {
 const INTERNAL_SUFFIXES = [".localhost", ".local", ".internal", ".home.arpa"];
 
 export type UrlPolicyResult =
-  | { ok: true; url: URL; hostname: string }
-  | { ok: false; reason: string };
+  { ok: true; url: URL; hostname: string } | { ok: false; reason: string };
 
 /**
  * Static checks that need no network access. Hostnames that pass are still
@@ -66,14 +65,20 @@ export function validateMonitorUrl(input: string): UrlPolicyResult {
   try {
     url = new URL(input);
   } catch {
-    return { ok: false, reason: "Enter a valid URL, including http:// or https://" };
+    return {
+      ok: false,
+      reason: "Enter a valid URL, including http:// or https://",
+    };
   }
 
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     return { ok: false, reason: "Only http and https URLs can be monitored" };
   }
   if (url.username || url.password) {
-    return { ok: false, reason: "URLs with embedded credentials are not allowed" };
+    return {
+      ok: false,
+      reason: "URLs with embedded credentials are not allowed",
+    };
   }
 
   // URL keeps IPv6 literals in brackets and allows a trailing root dot
@@ -89,7 +94,10 @@ export function validateMonitorUrl(input: string): UrlPolicyResult {
 
   if (isIP(hostname)) {
     if (isBlockedAddress(hostname)) {
-      return { ok: false, reason: "Private, loopback and reserved addresses cannot be monitored" };
+      return {
+        ok: false,
+        reason: "Private, loopback and reserved addresses cannot be monitored",
+      };
     }
     return { ok: true, url, hostname };
   }
@@ -98,7 +106,10 @@ export function validateMonitorUrl(input: string): UrlPolicyResult {
     hostname === "localhost" ||
     INTERNAL_SUFFIXES.some((suffix) => hostname.endsWith(suffix))
   ) {
-    return { ok: false, reason: "Local and internal hostnames cannot be monitored" };
+    return {
+      ok: false,
+      reason: "Local and internal hostnames cannot be monitored",
+    };
   }
   if (!hostname.includes(".")) {
     return { ok: false, reason: "Use a fully qualified public hostname" };

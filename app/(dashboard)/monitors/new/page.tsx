@@ -10,7 +10,10 @@ export default async function NewMonitorPage() {
   await requireUserId();
   return (
     <div className="max-w-2xl">
-      <PageHeader title="New monitor" description="Pulse sends a request on every interval and checks the response status." />
+      <PageHeader
+        title="New monitor"
+        description="Pulse sends a request on every interval and checks the response status."
+      />
       <Card className="p-6">
         <MonitorForm />
       </Card>

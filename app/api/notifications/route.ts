@@ -11,7 +11,15 @@ export async function GET() {
       where: { userId },
       orderBy: { createdAt: "desc" },
       take: 50,
-      select: { id: true, type: true, title: true, body: true, readAt: true, createdAt: true, incidentId: true },
+      select: {
+        id: true,
+        type: true,
+        title: true,
+        body: true,
+        readAt: true,
+        createdAt: true,
+        incidentId: true,
+      },
     }),
     prisma.notification.count({ where: { userId, readAt: null } }),
   ]);

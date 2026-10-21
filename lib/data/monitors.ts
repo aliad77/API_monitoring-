@@ -21,7 +21,9 @@ export const monitorSelect = {
   updatedAt: true,
 } satisfies Prisma.MonitorSelect;
 
-export type MonitorView = Prisma.MonitorGetPayload<{ select: typeof monitorSelect }>;
+export type MonitorView = Prisma.MonitorGetPayload<{
+  select: typeof monitorSelect;
+}>;
 
 export function findUserMonitor(userId: string, monitorId: string) {
   return prisma.monitor.findFirst({
@@ -42,9 +44,14 @@ export function listUserMonitors(userId: string) {
  * The soonest a user action may schedule the next check, so repeated
  * "check now" clicks or edits can't turn the worker into a request flooder.
  */
-export function earliestAllowedCheck(lastCheckedAt: Date | null, now = new Date()): Date {
+export function earliestAllowedCheck(
+  lastCheckedAt: Date | null,
+  now = new Date(),
+): Date {
   if (!lastCheckedAt) return now;
-  const earliest = new Date(lastCheckedAt.getTime() + MIN_SECONDS_BETWEEN_CHECKS * 1000);
+  const earliest = new Date(
+    lastCheckedAt.getTime() + MIN_SECONDS_BETWEEN_CHECKS * 1000,
+  );
   return earliest > now ? earliest : now;
 }
 

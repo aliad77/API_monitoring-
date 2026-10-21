@@ -21,7 +21,9 @@ async function processClaim(claim: ClaimedMonitor) {
     const summary = outcome.ok
       ? `up ${outcome.statusCode} in ${outcome.responseTimeMs} ms`
       : `down: ${outcome.error}`;
-    console.log(`[worker] ${claim.id} ${summary}${result === "stale" ? " (discarded, lease lost)" : ""}`);
+    console.log(
+      `[worker] ${claim.id} ${summary}${result === "stale" ? " (discarded, lease lost)" : ""}`,
+    );
   } catch (error) {
     // Isolated per monitor: a database error here leaves the lease in place,
     // so the monitor is retried after the lease expires and the rest of the
@@ -35,7 +37,9 @@ function sleep(ms: number) {
 }
 
 async function main() {
-  console.log(`[worker] started (batch size ${BATCH_SIZE}, poll ${POLL_INTERVAL_MS} ms)`);
+  console.log(
+    `[worker] started (batch size ${BATCH_SIZE}, poll ${POLL_INTERVAL_MS} ms)`,
+  );
   let lastPrune = 0;
 
   while (!stopping) {

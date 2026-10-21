@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { isBlockedAddress, validateMonitorUrl } from "@/lib/monitoring/url-policy";
+import {
+  isBlockedAddress,
+  validateMonitorUrl,
+} from "@/lib/monitoring/url-policy";
 
 describe("isBlockedAddress", () => {
   it.each([
@@ -29,12 +32,15 @@ describe("isBlockedAddress", () => {
     expect(isBlockedAddress(address)).toBe(true);
   });
 
-  it.each(["93.184.215.14", "1.1.1.1", "8.8.8.8", "2606:4700:4700::1111", "2a00:1450:4009:81f::200e"])(
-    "allows public address %s",
-    (address) => {
-      expect(isBlockedAddress(address)).toBe(false);
-    },
-  );
+  it.each([
+    "93.184.215.14",
+    "1.1.1.1",
+    "8.8.8.8",
+    "2606:4700:4700::1111",
+    "2a00:1450:4009:81f::200e",
+  ])("allows public address %s", (address) => {
+    expect(isBlockedAddress(address)).toBe(false);
+  });
 
   it("treats anything that is not an IP address as blocked", () => {
     expect(isBlockedAddress("example.com")).toBe(true);
@@ -48,16 +54,21 @@ describe("validateMonitorUrl", () => {
     expect(validateMonitorUrl("https://1.1.1.1/").ok).toBe(true);
   });
 
-  it.each(["ftp://example.com", "file:///etc/passwd", "javascript:alert(1)", "gopher://example.com"])(
-    "rejects non-http scheme %s",
-    (url) => {
-      expect(validateMonitorUrl(url)).toMatchObject({ ok: false });
-    },
-  );
+  it.each([
+    "ftp://example.com",
+    "file:///etc/passwd",
+    "javascript:alert(1)",
+    "gopher://example.com",
+  ])("rejects non-http scheme %s", (url) => {
+    expect(validateMonitorUrl(url)).toMatchObject({ ok: false });
+  });
 
   it("rejects URLs with embedded credentials", () => {
     const result = validateMonitorUrl("https://user:secret@example.com/");
-    expect(result).toEqual({ ok: false, reason: "URLs with embedded credentials are not allowed" });
+    expect(result).toEqual({
+      ok: false,
+      reason: "URLs with embedded credentials are not allowed",
+    });
   });
 
   it.each([

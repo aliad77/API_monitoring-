@@ -9,12 +9,20 @@ import { findUserStatusPage } from "@/lib/data/status-pages";
 
 export const metadata: Metadata = { title: "Edit status page" };
 
-export default async function EditStatusPagePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditStatusPagePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const userId = await requireUserId();
   const { id } = await params;
   const [statusPage, monitors] = await Promise.all([
     findUserStatusPage(userId, id),
-    prisma.monitor.findMany({ where: { userId }, orderBy: { name: "asc" }, select: { id: true, name: true } }),
+    prisma.monitor.findMany({
+      where: { userId },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
   ]);
   if (!statusPage) notFound();
 

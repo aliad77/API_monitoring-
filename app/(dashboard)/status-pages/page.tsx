@@ -40,7 +40,10 @@ export default async function StatusPagesPage() {
         ) : (
           <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {statusPages.map((page) => (
-              <li key={page.id} className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <li
+                key={page.id}
+                className="flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+              >
                 <div className="min-w-0">
                   <p className="font-medium">{page.title}</p>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">
@@ -48,11 +51,18 @@ export default async function StatusPagesPage() {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Link href={`/status/${page.slug}`} target="_blank" className={buttonStyles("secondary", "sm")}>
+                  <Link
+                    href={`/status/${page.slug}`}
+                    target="_blank"
+                    className={buttonStyles("secondary", "sm")}
+                  >
                     <ExternalLink className="size-4" aria-hidden />
                     View
                   </Link>
-                  <Link href={`/status-pages/${page.id}/edit`} className={buttonStyles("secondary", "sm")}>
+                  <Link
+                    href={`/status-pages/${page.id}/edit`}
+                    className={buttonStyles("secondary", "sm")}
+                  >
                     Edit
                   </Link>
                 </div>

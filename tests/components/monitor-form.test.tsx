@@ -13,7 +13,10 @@ vi.mock("next/navigation", () => ({
 const fetchMock = vi.fn();
 
 function jsonResponse(status: number, body: unknown) {
-  return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
 }
 
 async function fillForm(name: string, url: string) {
@@ -38,15 +41,25 @@ describe("MonitorForm", () => {
     await user.click(screen.getByRole("button", { name: "Create monitor" }));
 
     expect(screen.getByText("Enter a name")).toBeInTheDocument();
-    expect(screen.getByText("Only http and https URLs can be monitored")).toBeInTheDocument();
-    expect(screen.getByLabelText("URL")).toHaveAttribute("aria-invalid", "true");
+    expect(
+      screen.getByText("Only http and https URLs can be monitored"),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("URL")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("submits the monitor with numeric settings and opens it", async () => {
-    fetchMock.mockResolvedValue(jsonResponse(201, { monitor: { id: "mon_123" } }));
+    fetchMock.mockResolvedValue(
+      jsonResponse(201, { monitor: { id: "mon_123" } }),
+    );
     render(<MonitorForm />);
-    const user = await fillForm("Billing API", "https://billing.example.com/health");
+    const user = await fillForm(
+      "Billing API",
+      "https://billing.example.com/health",
+    );
 
     await user.selectOptions(screen.getByLabelText("Check interval"), "60");
     await user.click(screen.getByRole("button", { name: "Create monitor" }));
@@ -70,7 +83,9 @@ describe("MonitorForm", () => {
     fetchMock.mockResolvedValue(
       jsonResponse(422, {
         error: "Please correct the highlighted fields.",
-        fieldErrors: { url: "Private, loopback and reserved addresses cannot be monitored" },
+        fieldErrors: {
+          url: "Private, loopback and reserved addresses cannot be monitored",
+        },
       }),
     );
     render(<MonitorForm />);
@@ -78,14 +93,25 @@ describe("MonitorForm", () => {
 
     await user.click(screen.getByRole("button", { name: "Create monitor" }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Please correct the highlighted fields.");
-    expect(screen.getByText("Private, loopback and reserved addresses cannot be monitored")).toBeInTheDocument();
-    expect(screen.getByLabelText("URL")).toHaveAttribute("aria-invalid", "true");
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Please correct the highlighted fields.",
+    );
+    expect(
+      screen.getByText(
+        "Private, loopback and reserved addresses cannot be monitored",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("URL")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
     expect(push).not.toHaveBeenCalled();
   });
 
   it("updates an existing monitor with PATCH", async () => {
-    fetchMock.mockResolvedValue(jsonResponse(200, { monitor: { id: "mon_1" } }));
+    fetchMock.mockResolvedValue(
+      jsonResponse(200, { monitor: { id: "mon_1" } }),
+    );
     render(
       <MonitorForm
         monitorId="mon_1"
@@ -106,6 +132,10 @@ describe("MonitorForm", () => {
     const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe("/api/monitors/mon_1");
     expect(init.method).toBe("PATCH");
-    expect(JSON.parse(init.body)).toMatchObject({ method: "HEAD", expectedStatus: 204, intervalSeconds: 600 });
+    expect(JSON.parse(init.body)).toMatchObject({
+      method: "HEAD",
+      expectedStatus: 204,
+      intervalSeconds: 600,
+    });
   });
 });

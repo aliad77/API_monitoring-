@@ -34,7 +34,10 @@ export async function POST(request: Request) {
   });
 
   if (!monitor) {
-    return jsonError(403, `You can have at most ${MAX_MONITORS_PER_USER} monitors.`);
+    return jsonError(
+      403,
+      `You can have at most ${MAX_MONITORS_PER_USER} monitors.`,
+    );
   }
   return Response.json({ monitor }, { status: 201 });
 }

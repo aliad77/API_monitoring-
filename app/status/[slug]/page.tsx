@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { getPublicStatusPage, type PublicStatusPage } from "@/lib/data/status-pages";
+import {
+  getPublicStatusPage,
+  type PublicStatusPage,
+} from "@/lib/data/status-pages";
 import { formatDateTime, formatDuration, formatUptime } from "@/lib/format";
 
 // Always render from current data; there is no caching layer to invalidate.
@@ -15,18 +18,39 @@ type PageProps = { params: Promise<{ slug: string }> };
 // Shared between generateMetadata and the page so the data is loaded once.
 const loadPage = cache(getPublicStatusPage);
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const page = await loadPage((await params).slug);
   return { title: page ? `${page.title} status` : "Status page not found" };
 }
 
 type ServiceStatus = PublicStatusPage["services"][number]["status"];
 
-const serviceLabels: Record<ServiceStatus, { label: string; icon: typeof CheckCircle2; className: string }> = {
-  UP: { label: "Operational", icon: CheckCircle2, className: "text-emerald-600 dark:text-emerald-400" },
-  DOWN: { label: "Outage", icon: XCircle, className: "text-red-600 dark:text-red-400" },
-  UNKNOWN: { label: "No data yet", icon: CircleHelp, className: "text-amber-600 dark:text-amber-400" },
-  PAUSED: { label: "Not monitored", icon: PauseCircle, className: "text-zinc-500" },
+const serviceLabels: Record<
+  ServiceStatus,
+  { label: string; icon: typeof CheckCircle2; className: string }
+> = {
+  UP: {
+    label: "Operational",
+    icon: CheckCircle2,
+    className: "text-emerald-600 dark:text-emerald-400",
+  },
+  DOWN: {
+    label: "Outage",
+    icon: XCircle,
+    className: "text-red-600 dark:text-red-400",
+  },
+  UNKNOWN: {
+    label: "No data yet",
+    icon: CircleHelp,
+    className: "text-amber-600 dark:text-amber-400",
+  },
+  PAUSED: {
+    label: "Not monitored",
+    icon: PauseCircle,
+    className: "text-zinc-500",
+  },
 };
 
 function overallStatus(services: PublicStatusPage["services"]) {
@@ -47,7 +71,11 @@ function dayBarClass(uptime: number | null) {
   return "bg-red-500";
 }
 
-const dayFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+const dayFormat = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  timeZone: "UTC",
+});
 
 export default async function PublicStatusPageView({ params }: PageProps) {
   const page = await loadPage((await params).slug);
@@ -59,36 +87,64 @@ export default async function PublicStatusPageView({ params }: PageProps) {
     <div className="mx-auto max-w-3xl px-4 py-10">
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{page.title}</h1>
-          {page.description && <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{page.description}</p>}
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {page.title}
+          </h1>
+          {page.description && (
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+              {page.description}
+            </p>
+          )}
         </div>
         <ThemeToggle />
       </header>
 
       {page.services.length > 0 && (
-        <div className={`mb-8 rounded-lg px-5 py-4 font-medium text-white ${overall.className}`}>{overall.text}</div>
+        <div
+          className={`mb-8 rounded-lg px-5 py-4 font-medium text-white ${overall.className}`}
+        >
+          {overall.text}
+        </div>
       )}
 
-      <section aria-labelledby="services-heading" className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <h2 id="services-heading" className="border-b border-zinc-200 px-5 py-3 text-sm font-semibold dark:border-zinc-800">
+      <section
+        aria-labelledby="services-heading"
+        className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+      >
+        <h2
+          id="services-heading"
+          className="border-b border-zinc-200 px-5 py-3 text-sm font-semibold dark:border-zinc-800"
+        >
           Services
         </h2>
         {page.services.length === 0 ? (
-          <p className="px-5 py-8 text-center text-sm text-zinc-500">No services are listed on this page yet.</p>
+          <p className="px-5 py-8 text-center text-sm text-zinc-500">
+            No services are listed on this page yet.
+          </p>
         ) : (
           <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {page.services.map((service, index) => {
-              const { label, icon: Icon, className } = serviceLabels[service.status];
+              const {
+                label,
+                icon: Icon,
+                className,
+              } = serviceLabels[service.status];
               return (
                 <li key={`${service.name}-${index}`} className="px-5 py-4">
                   <div className="flex items-center justify-between gap-4">
                     <p className="font-medium">{service.name}</p>
-                    <span className={`inline-flex items-center gap-1.5 text-sm ${className}`}>
+                    <span
+                      className={`inline-flex items-center gap-1.5 text-sm ${className}`}
+                    >
                       <Icon className="size-4" aria-hidden />
                       {label}
                     </span>
                   </div>
-                  <div className="mt-3 flex h-8 gap-0.5" role="img" aria-label={`Daily uptime for the last 30 days: ${formatUptime(service.uptime)} overall`}>
+                  <div
+                    className="mt-3 flex h-8 gap-0.5"
+                    role="img"
+                    aria-label={`Daily uptime for the last 30 days: ${formatUptime(service.uptime)} overall`}
+                  >
                     {service.days.map((day) => (
                       <div
                         key={day.date}
@@ -98,7 +154,9 @@ export default async function PublicStatusPageView({ params }: PageProps) {
                     ))}
                   </div>
                   <div className="mt-2 flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
-                    <span>{dayFormat.format(new Date(service.days[0].date))}</span>
+                    <span>
+                      {dayFormat.format(new Date(service.days[0].date))}
+                    </span>
                     <span>{formatUptime(service.uptime)} uptime (sampled)</span>
                     <span>Today</span>
                   </div>
@@ -114,7 +172,9 @@ export default async function PublicStatusPageView({ params }: PageProps) {
           Incidents in the last 30 days
         </h2>
         {page.incidents.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">No incidents reported.</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            No incidents reported.
+          </p>
         ) : (
           <ul className="space-y-3">
             {page.incidents.map((incident) => (
@@ -123,7 +183,8 @@ export default async function PublicStatusPageView({ params }: PageProps) {
                 className="rounded-lg border border-zinc-200 bg-white px-5 py-3 text-sm dark:border-zinc-800 dark:bg-zinc-900"
               >
                 <p className="font-medium">
-                  {incident.serviceName} {incident.resolvedAt ? "was unavailable" : "is unavailable"}
+                  {incident.serviceName}{" "}
+                  {incident.resolvedAt ? "was unavailable" : "is unavailable"}
                 </p>
                 <p className="mt-1 text-zinc-500 dark:text-zinc-400">
                   Started {formatDateTime(incident.startedAt)}

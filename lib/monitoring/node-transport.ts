@@ -16,11 +16,18 @@ export type TransportResponse = {
   location: string | null;
 };
 
-export type Transport = (request: TransportRequest) => Promise<TransportResponse>;
+export type Transport = (
+  request: TransportRequest,
+) => Promise<TransportResponse>;
 
-const USER_AGENT = "PulseMonitor/1.0 (+https://github.com/aliad77/API_monitoring-)";
+const USER_AGENT =
+  "PulseMonitor/1.0 (+https://github.com/aliad77/API_monitoring-)";
 
-type LookupCallback = (error: Error | null, address: string | LookupAddress[], family?: number) => void;
+type LookupCallback = (
+  error: Error | null,
+  address: string | LookupAddress[],
+  family?: number,
+) => void;
 
 /**
  * A DNS lookup that always answers with the address that already passed the
@@ -28,7 +35,11 @@ type LookupCallback = (error: Error | null, address: string | LookupAddress[], f
  * attack could answer with a private IP.
  */
 function pinnedLookup(address: ResolvedAddress): LookupFunction {
-  const lookup = (_hostname: string, options: { all?: boolean }, callback: LookupCallback) => {
+  const lookup = (
+    _hostname: string,
+    options: { all?: boolean },
+    callback: LookupCallback,
+  ) => {
     if (options.all) {
       callback(null, [{ address: address.address, family: address.family }]);
     } else {

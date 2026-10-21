@@ -6,7 +6,11 @@ import { useState, type FormEvent } from "react";
 import { Button, buttonStyles } from "@/components/ui/button";
 import { Field, FormError, Input, Select } from "@/components/ui/field";
 import { apiRequest, type FieldErrors } from "@/lib/client-api";
-import { CHECK_INTERVALS, HTTP_METHODS, REQUEST_TIMEOUTS } from "@/lib/monitoring/options";
+import {
+  CHECK_INTERVALS,
+  HTTP_METHODS,
+  REQUEST_TIMEOUTS,
+} from "@/lib/monitoring/options";
 
 export type MonitorFormValues = {
   name: string;
@@ -43,7 +47,11 @@ export function validateMonitorForm(values: MonitorFormValues): FieldErrors {
     errors.url = "Enter a valid URL, including http:// or https://";
   }
 
-  if (!Number.isInteger(values.expectedStatus) || values.expectedStatus < 100 || values.expectedStatus > 599) {
+  if (
+    !Number.isInteger(values.expectedStatus) ||
+    values.expectedStatus < 100 ||
+    values.expectedStatus > 599
+  ) {
     errors.expectedStatus = "Use a status code between 100 and 599";
   }
   return errors;
@@ -54,14 +62,20 @@ type MonitorFormProps = {
   initialValues?: MonitorFormValues;
 };
 
-export function MonitorForm({ monitorId, initialValues = defaults }: MonitorFormProps) {
+export function MonitorForm({
+  monitorId,
+  initialValues = defaults,
+}: MonitorFormProps) {
   const router = useRouter();
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  function update<K extends keyof MonitorFormValues>(key: K, value: MonitorFormValues[K]) {
+  function update<K extends keyof MonitorFormValues>(
+    key: K,
+    value: MonitorFormValues[K],
+  ) {
     setValues((current) => ({ ...current, [key]: value }));
   }
 
@@ -74,10 +88,22 @@ export function MonitorForm({ monitorId, initialValues = defaults }: MonitorForm
     if (Object.keys(clientErrors).length > 0) return;
 
     setSaving(true);
-    const body = { ...values, name: values.name.trim(), url: values.url.trim() };
+    const body = {
+      ...values,
+      name: values.name.trim(),
+      url: values.url.trim(),
+    };
     const result = monitorId
-      ? await apiRequest<{ monitor: { id: string } }>(`/api/monitors/${monitorId}`, "PATCH", body)
-      : await apiRequest<{ monitor: { id: string } }>("/api/monitors", "POST", body);
+      ? await apiRequest<{ monitor: { id: string } }>(
+          `/api/monitors/${monitorId}`,
+          "PATCH",
+          body,
+        )
+      : await apiRequest<{ monitor: { id: string } }>(
+          "/api/monitors",
+          "POST",
+          body,
+        );
     setSaving(false);
 
     if (!result.ok) {
@@ -127,7 +153,12 @@ export function MonitorForm({ monitorId, initialValues = defaults }: MonitorForm
           <Select
             id="method"
             value={values.method}
-            onChange={(event) => update("method", event.target.value as MonitorFormValues["method"])}
+            onChange={(event) =>
+              update(
+                "method",
+                event.target.value as MonitorFormValues["method"],
+              )
+            }
             error={errors.method}
           >
             {HTTP_METHODS.map((method) => (
@@ -138,23 +169,37 @@ export function MonitorForm({ monitorId, initialValues = defaults }: MonitorForm
           </Select>
         </Field>
 
-        <Field id="expectedStatus" label="Expected status code" error={errors.expectedStatus}>
+        <Field
+          id="expectedStatus"
+          label="Expected status code"
+          error={errors.expectedStatus}
+        >
           <Input
             id="expectedStatus"
             type="number"
             min={100}
             max={599}
-            value={Number.isNaN(values.expectedStatus) ? "" : values.expectedStatus}
-            onChange={(event) => update("expectedStatus", event.target.valueAsNumber)}
+            value={
+              Number.isNaN(values.expectedStatus) ? "" : values.expectedStatus
+            }
+            onChange={(event) =>
+              update("expectedStatus", event.target.valueAsNumber)
+            }
             error={errors.expectedStatus}
           />
         </Field>
 
-        <Field id="intervalSeconds" label="Check interval" error={errors.intervalSeconds}>
+        <Field
+          id="intervalSeconds"
+          label="Check interval"
+          error={errors.intervalSeconds}
+        >
           <Select
             id="intervalSeconds"
             value={values.intervalSeconds}
-            onChange={(event) => update("intervalSeconds", Number(event.target.value))}
+            onChange={(event) =>
+              update("intervalSeconds", Number(event.target.value))
+            }
             error={errors.intervalSeconds}
           >
             {CHECK_INTERVALS.map((option) => (
@@ -169,7 +214,9 @@ export function MonitorForm({ monitorId, initialValues = defaults }: MonitorForm
           <Select
             id="timeoutMs"
             value={values.timeoutMs}
-            onChange={(event) => update("timeoutMs", Number(event.target.value))}
+            onChange={(event) =>
+              update("timeoutMs", Number(event.target.value))
+            }
             error={errors.timeoutMs}
           >
             {REQUEST_TIMEOUTS.map((option) => (
@@ -185,7 +232,10 @@ export function MonitorForm({ monitorId, initialValues = defaults }: MonitorForm
         <Button type="submit" disabled={saving}>
           {saving ? "Saving…" : monitorId ? "Save changes" : "Create monitor"}
         </Button>
-        <Link href={monitorId ? `/monitors/${monitorId}` : "/monitors"} className={buttonStyles("secondary")}>
+        <Link
+          href={monitorId ? `/monitors/${monitorId}` : "/monitors"}
+          className={buttonStyles("secondary")}
+        >
           Cancel
         </Link>
       </div>
