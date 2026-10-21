@@ -38,7 +38,9 @@ export function ScrollStage({
     let frame = 0;
     let pointer: { x: number; y: number } | null = null;
 
-    function update() {
+    // Arrow functions (not hoisted declarations) so TypeScript keeps the
+    // non-null narrowing of `root` inside them.
+    const update = () => {
       frame = 0;
       const viewport = window.innerHeight;
 
@@ -66,19 +68,19 @@ export function ScrollStage({
         root.style.setProperty("--mx", pointer.x.toFixed(3));
         root.style.setProperty("--my", pointer.y.toFixed(3));
       }
-    }
+    };
 
-    function schedule() {
+    const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
-    }
+    };
 
-    function onPointerMove(event: PointerEvent) {
+    const onPointerMove = (event: PointerEvent) => {
       pointer = {
         x: event.clientX / window.innerWidth - 0.5,
         y: event.clientY / window.innerHeight - 0.5,
       };
       schedule();
-    }
+    };
 
     const tiltEnabled =
       window.matchMedia("(pointer: fine)").matches &&
