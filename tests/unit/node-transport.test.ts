@@ -35,11 +35,27 @@ describe("nodeTransport", () => {
     const response = await nodeTransport({
       url: new URL(`http://pulse-test.invalid:${port}/health`),
       method: "GET",
-      address: loopback,
+      addresses: [loopback],
       signal: new AbortController().signal,
     });
 
     expect(response).toEqual({ statusCode: 204, location: null });
+  });
+
+  it("falls back to the next pinned address when the first is unreachable", async () => {
+    const port = await startServer((_request, response) => {
+      response.writeHead(200).end();
+    });
+
+    // Nothing listens on IPv6 loopback, as on a host without IPv6 routing.
+    const response = await nodeTransport({
+      url: new URL(`http://pulse-test.invalid:${port}/`),
+      method: "GET",
+      addresses: [{ address: "::1", family: 6 }, loopback],
+      signal: new AbortController().signal,
+    });
+
+    expect(response.statusCode).toBe(200);
   });
 
   it("sends only the monitor's own headers", async () => {
@@ -52,7 +68,7 @@ describe("nodeTransport", () => {
     await nodeTransport({
       url: new URL(`http://pulse-test.invalid:${port}/`),
       method: "HEAD",
-      address: loopback,
+      addresses: [loopback],
       signal: new AbortController().signal,
     });
 
@@ -69,7 +85,7 @@ describe("nodeTransport", () => {
     const response = await nodeTransport({
       url: new URL(`http://pulse-test.invalid:${port}/`),
       method: "GET",
-      address: loopback,
+      addresses: [loopback],
       signal: new AbortController().signal,
     });
 
@@ -89,7 +105,7 @@ describe("nodeTransport", () => {
     const response = await nodeTransport({
       url: new URL(`http://pulse-test.invalid:${port}/`),
       method: "GET",
-      address: loopback,
+      addresses: [loopback],
       signal: new AbortController().signal,
     });
 
@@ -107,7 +123,7 @@ describe("nodeTransport", () => {
       nodeTransport({
         url: new URL(`http://pulse-test.invalid:${port}/`),
         method: "GET",
-        address: loopback,
+        addresses: [loopback],
         signal: controller.signal,
       }),
     ).rejects.toThrow();
