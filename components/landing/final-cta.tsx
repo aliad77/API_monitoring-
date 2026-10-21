@@ -23,8 +23,8 @@ export function FinalCta({ signedIn }: { signedIn: boolean }) {
         Keep your services in sight.
       </h2>
       <p className="mx-auto mt-4 max-w-md text-haze-600 dark:text-haze-300">
-        Free and open source. Run it locally with Docker and PostgreSQL in a
-        few minutes.
+        Free and open source. Run it locally with Docker and PostgreSQL in a few
+        minutes.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link

@@ -49,10 +49,7 @@ const features = [
 
 export function SpecSheet() {
   return (
-    <section
-      className="px-5 py-24"
-      aria-labelledby="spec-title"
-    >
+    <section className="px-5 py-24" aria-labelledby="spec-title">
       <div className={styles.container}>
         <p className={styles.kicker}>04 · Spec sheet</p>
         <h2 id="spec-title" className={styles.sectionTitle}>

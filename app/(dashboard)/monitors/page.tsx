@@ -92,10 +92,7 @@ export default async function MonitorsPage() {
               </thead>
               <tbody className="divide-y divide-(--edge)">
                 {monitors.map((monitor) => (
-                  <tr
-                    key={monitor.id}
-                    className="hover:bg-lavender/5"
-                  >
+                  <tr key={monitor.id} className="hover:bg-lavender/5">
                     <td className="max-w-xs px-5 py-3">
                       <Link
                         href={`/monitors/${monitor.id}`}
