@@ -1,0 +1,8 @@
+
+> pulse@0.1.0 typecheck
+> tsc --noEmit
+
+components/landing/scroll-stage.tsx(63,7): error TS18047: 'root' is possibly 'null'.
+components/landing/scroll-stage.tsx(66,9): error TS18047: 'root' is possibly 'null'.
+components/landing/scroll-stage.tsx(67,9): error TS18047: 'root' is possibly 'null'.
+exit=2
