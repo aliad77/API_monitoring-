@@ -4,7 +4,7 @@ Pulse is a full-stack API and uptime monitoring app. You register HTTP endpoints
 
 I built it as a portfolio project to practise the parts of a real product that are easy to get wrong: running background jobs safely across several workers, handling concurrent state changes, making outbound requests to user-supplied URLs without opening an SSRF hole, and enforcing per-user data ownership.
 
-> **Project status:** the features below are implemented. The code was written and statically reviewed, but it has **not** been run, built or tested yet. See [Project status and verification](#project-status-and-verification).
+> **Project status:** the features below are implemented and covered by automated tests, which run in GitHub Actions against a real PostgreSQL database. The application itself has not yet been run end-to-end in a browser, built for production, or deployed. See [Project status and verification](#project-status-and-verification).
 
 ## Features
 
@@ -106,10 +106,11 @@ These are covered in more depth in [docs/engineering-decisions.md](docs/engineer
 
 ## Security
 
-- **SSRF:** the worker allows only http/https URLs and rejects URLs with embedded credentials. It also rejects localhost, `.local`, `.internal` and single-label hostnames. Before connecting, it resolves DNS and rejects the host if _any_ address is private, loopback, link-local, CGNAT, multicast or reserved. IPv6 is limited to global unicast. The connection is then pinned to the validated IP through a custom `lookup` to defeat DNS rebinding. Every redirect hop goes through the same checks, and the response body is never downloaded.
+- **SSRF:** the worker allows only http/https URLs and rejects URLs with embedded credentials. It also rejects localhost, `.local`, `.internal` and single-label hostnames. Before connecting, it resolves DNS and rejects the host if _any_ address is private, loopback, link-local, CGNAT, multicast or reserved. IPv6 is limited to global unicast. The connection is then pinned to the validated IPs through a custom `lookup` to defeat DNS rebinding, while still letting Node fall back from IPv6 to IPv4. Every redirect hop goes through the same checks, and the response body is never downloaded.
 - **No credential leakage:** checks use a fresh connection with only `User-Agent` and `Accept` headers. The web app never makes outbound requests to user URLs.
 - **Limits:** each user can have at most 25 monitors and 5 status pages. User-triggered checks must be at least 30 s apart, and intervals and timeouts come from fixed lists.
-- **Auth:** passwords are hashed with bcrypt. JWT sessions are signed with `AUTH_SECRET`. Server-side checks run on every page and API route.
+- **Auth:** passwords are hashed with bcrypt. JWT sessions are signed with `AUTH_SECRET`. Server-side checks run on every page and API route, and they also confirm the account still exists, so a deleted account's token stops working immediately.
+- **Headers:** responses set `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, a strict referrer policy and a restrictive permissions policy.
 - **Public pages:** public status pages select only display fields. A test checks that URLs, ids and failure messages don't appear in the public data.
 - **Errors:** API errors return `{ error, fieldErrors? }` with no stack traces or internals.
 
@@ -146,7 +147,7 @@ cp .env.example .env
 # Set AUTH_SECRET in .env, e.g. to the output of: openssl rand -base64 32
 
 docker compose up -d          # PostgreSQL on :5432 (also creates pulse_test)
-npm install                   # also runs `prisma generate`
+npm ci                        # installs from package-lock.json; also runs `prisma generate`
 npm run db:deploy             # apply migrations
 npm run db:seed               # optional demo account (see below)
 
@@ -178,29 +179,44 @@ Without the worker, monitors stay in the _Pending_ state, because the web app ne
 npm test                      # all Vitest projects
 ```
 
+To include the database tests locally, keep `TEST_DATABASE_URL` set (the Docker Compose setup creates the `pulse_test` database) and apply the migrations to it first:
+
+```bash
+DATABASE_URL="$TEST_DATABASE_URL" npm run db:deploy
+```
+
 The tests are split into three Vitest projects:
 
 - **unit** (`tests/unit`): URL policy (private ranges, IPv6, encoded IPs, internal hostnames) and the HTTP check, using an injected resolver and transport to cover success, wrong status, DNS failure, refused connections, timeouts, redirects to private targets, the redirect limit and DNS rebinding. It also covers the pinned transport against a local server, uptime maths, check rate limiting and the session guard.
-- **integration** (`tests/integration`): runs against a real PostgreSQL when `TEST_DATABASE_URL` is set and is skipped otherwise. Covers authentication enforcement, cross-user ownership, validation, the monitor limit, pagination, incident open/resolve, duplicate-incident prevention, stale and concurrent result handling, `SKIP LOCKED` claim exclusivity, and status page access and data exposure.
+- **integration** (`tests/integration`): runs against a real PostgreSQL when `TEST_DATABASE_URL` is set and is skipped otherwise. CI always sets it. Covers authentication enforcement, cross-user ownership, validation, the monitor limit, pagination, incident open/resolve, duplicate-incident prevention, stale and concurrent result handling, `SKIP LOCKED` claim exclusivity, and status page access and data exposure.
 - **components** (`tests/components`): the monitor form (client validation, payload, server field errors) and the status badge.
 
 Outbound HTTP is always mocked or sent to a local test server, never to the internet.
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` has two jobs:
+`.github/workflows/ci.yml` runs on every push to `main` and on pull requests. Each check is a separate job, so one failure doesn't hide another:
 
-- **Static checks:** Prettier check, ESLint and `tsc --noEmit`.
-- **Tests:** starts a PostgreSQL service, applies the migrations and runs the full test suite.
+- **Format:** `prettier --check`
+- **Lint:** ESLint with the Next.js config
+- **Type check:** `tsc --noEmit`
+- **Tests:** starts PostgreSQL 16, applies the migrations with `prisma migrate deploy` and runs all three Vitest projects
+
+All jobs install dependencies with `npm ci` from the committed lockfile. CI does not run `next build`.
 
 ## Project status and verification
 
-To be precise about what has and hasn't been done:
+| Area | Status |
+| --- | --- |
+| Features listed above | Implemented |
+| Formatting, lint, type check | Pass in GitHub Actions |
+| Automated tests | Pass in GitHub Actions (unit, integration against PostgreSQL 16, component), with none skipped |
+| Database migration | Applied successfully by `prisma migrate deploy` in CI |
+| Production build (`next build`) | Not run |
+| App and worker run end-to-end in a browser | Not yet done |
+| Deployment | None |
 
-- **Written:** all source, migrations, tests, CI configuration and documentation in this repository.
-- **Not yet done:** dependencies have not been installed, and the app, worker, test suite, linter, formatter and type checker have not been run. CI has not reported a run yet. The SQL migration was written by hand to match `schema.prisma` and has not been applied to a database.
-- **No lockfile yet:** `package-lock.json` will be created by the first `npm install` and should be committed. CI uses `npm install` until then.
-- **Expect formatting fixes:** the first `npm run format` will probably reformat some files, since Prettier hasn't been run.
+The lockfile was generated by `npm install` on a GitHub-hosted runner, not on a developer machine. The current CI status is shown on the repository's Actions tab.
 
 ## Known limitations
 
@@ -208,7 +224,12 @@ To be precise about what has and hasn't been done:
 - **No confirmation retries:** one failed check opens an incident, so a brief blip produces a short incident.
 - **Sampled uptime:** outages shorter than the check interval can be missed.
 - **In-app notifications only:** no email, SMS or webhooks.
-- **No login rate limiting, email verification or password reset.** JWT sessions can't be revoked before they expire.
+- **No login rate limiting, email verification or password reset.** Changing a password doesn't sign out other sessions.
+- **No Content-Security-Policy yet:** the inline theme script would need a nonce or hash first.
+- **Public status pages aren't cached or rate limited:** each visit runs a query per listed monitor.
+- **Paused monitors keep open incidents:** an incident only resolves after the monitor is resumed and a check succeeds.
+- **Port probing:** ports aren't restricted, so a user can test whether a port is open on any _public_ address.
+- **Pre-release auth library:** Auth.js v5 is pinned to an exact beta release.
 - **Limited checks:** only status-code checks with GET/HEAD. No request bodies, custom headers or response assertions.
 - **Polling scheduler:** checks start up to one poll interval (5 s) late, and throughput per worker is bounded by the batch size.
 - **Retention:** check history is kept for 35 days; incidents are kept indefinitely.
