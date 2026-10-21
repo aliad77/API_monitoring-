@@ -36,16 +36,16 @@ The landing page is a scroll-driven 3D sequence: a chrome monitoring station tha
 
 ## Tech stack
 
-| Area       | Choice                                                   |
-| ---------- | -------------------------------------------------------- |
-| Framework  | Next.js 15 (App Router), React 19, TypeScript            |
+| Area       | Choice                                                    |
+| ---------- | --------------------------------------------------------- |
+| Framework  | Next.js 15 (App Router), React 19, TypeScript             |
 | Styling    | Tailwind CSS 4, CSS 3D transforms, Lucide icons, Recharts |
-| Database   | PostgreSQL 16, Prisma ORM                                |
-| Auth       | Auth.js v5 (credentials provider, JWT sessions), bcrypt  |
-| Validation | Zod                                                      |
-| Monitoring | Standalone Node.js worker using `node:http`/`node:https` |
-| Testing    | Vitest, React Testing Library                            |
-| Tooling    | ESLint, Prettier, Docker Compose, GitHub Actions         |
+| Database   | PostgreSQL 16, Prisma ORM                                 |
+| Auth       | Auth.js v5 (credentials provider, JWT sessions), bcrypt   |
+| Validation | Zod                                                       |
+| Monitoring | Standalone Node.js worker using `node:http`/`node:https`  |
+| Testing    | Vitest, React Testing Library                             |
+| Tooling    | ESLint, Prettier, Docker Compose, GitHub Actions          |
 
 ## Architecture
 
