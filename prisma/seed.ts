@@ -9,8 +9,18 @@ const prisma = new PrismaClient();
 const DEMO_EMAIL = "demo@example.com";
 
 const demoMonitors = [
-  { name: "[Demo] example.com", url: "https://example.com/", method: "GET" as const, expectedStatus: 200 },
-  { name: "[Demo] IANA homepage", url: "https://www.iana.org/", method: "HEAD" as const, expectedStatus: 200 },
+  {
+    name: "[Demo] example.com",
+    url: "https://example.com/",
+    method: "GET" as const,
+    expectedStatus: 200,
+  },
+  {
+    name: "[Demo] IANA homepage",
+    url: "https://www.iana.org/",
+    method: "HEAD" as const,
+    expectedStatus: 200,
+  },
   // Returns 404, so it demonstrates a failing monitor and an open incident.
   {
     name: "[Demo] Missing page (expected to fail)",
@@ -38,7 +48,9 @@ async function main() {
 
   const existing = await prisma.monitor.count({ where: { userId: user.id } });
   if (existing > 0) {
-    console.log(`Demo account already has ${existing} monitors; nothing to do.`);
+    console.log(
+      `Demo account already has ${existing} monitors; nothing to do.`,
+    );
     return;
   }
 
@@ -46,14 +58,23 @@ async function main() {
   for (const monitor of demoMonitors) {
     monitors.push(
       await prisma.monitor.create({
-        data: { ...monitor, userId: user.id, intervalSeconds: 300, timeoutMs: 10000 },
+        data: {
+          ...monitor,
+          userId: user.id,
+          intervalSeconds: 300,
+          timeoutMs: 10000,
+        },
       }),
     );
   }
 
-  const slugTaken = await prisma.statusPage.findUnique({ where: { slug: "demo" } });
+  const slugTaken = await prisma.statusPage.findUnique({
+    where: { slug: "demo" },
+  });
   if (slugTaken) {
-    console.log(`Seeded ${monitors.length} demo monitors; /status/demo already exists, so no status page was created.`);
+    console.log(
+      `Seeded ${monitors.length} demo monitors; /status/demo already exists, so no status page was created.`,
+    );
     return;
   }
 
@@ -62,14 +83,19 @@ async function main() {
       userId: user.id,
       slug: "demo",
       title: "Demo status page",
-      description: "Seeded demo data. Results come from real checks run by the local worker.",
+      description:
+        "Seeded demo data. Results come from real checks run by the local worker.",
       monitors: {
-        create: monitors.slice(0, 2).map((monitor, position) => ({ monitorId: monitor.id, position })),
+        create: monitors
+          .slice(0, 2)
+          .map((monitor, position) => ({ monitorId: monitor.id, position })),
       },
     },
   });
 
-  console.log(`Seeded demo account ${DEMO_EMAIL} with ${monitors.length} monitors and a status page at /status/demo.`);
+  console.log(
+    `Seeded demo account ${DEMO_EMAIL} with ${monitors.length} monitors and a status page at /status/demo.`,
+  );
 }
 
 main()

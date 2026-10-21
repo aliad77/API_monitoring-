@@ -29,7 +29,11 @@ type CheckHistoryProps = {
   initialCursor: string | null;
 };
 
-export function CheckHistory({ monitorId, initialChecks, initialCursor }: CheckHistoryProps) {
+export function CheckHistory({
+  monitorId,
+  initialChecks,
+  initialCursor,
+}: CheckHistoryProps) {
   const [checks, setChecks] = useState(initialChecks);
   const [cursor, setCursor] = useState(initialCursor);
   const [loading, setLoading] = useState(false);
@@ -38,7 +42,10 @@ export function CheckHistory({ monitorId, initialChecks, initialCursor }: CheckH
   async function loadMore() {
     if (!cursor) return;
     setLoading(true);
-    const result = await apiRequest<{ items: CheckRow[]; nextCursor: string | null }>(
+    const result = await apiRequest<{
+      items: CheckRow[];
+      nextCursor: string | null;
+    }>(
       `/api/monitors/${monitorId}/checks?cursor=${encodeURIComponent(cursor)}&limit=20`,
       "GET",
     );
@@ -65,28 +72,46 @@ export function CheckHistory({ monitorId, initialChecks, initialCursor }: CheckH
         <table className="w-full text-sm">
           <thead className="text-left text-xs text-zinc-500 dark:text-zinc-400">
             <tr className="border-b border-zinc-200 dark:border-zinc-800">
-              <th scope="col" className="px-5 py-2 font-medium">Time</th>
-              <th scope="col" className="px-5 py-2 font-medium">Result</th>
-              <th scope="col" className="px-5 py-2 font-medium">Status</th>
-              <th scope="col" className="px-5 py-2 text-right font-medium">Response</th>
+              <th scope="col" className="px-5 py-2 font-medium">
+                Time
+              </th>
+              <th scope="col" className="px-5 py-2 font-medium">
+                Result
+              </th>
+              <th scope="col" className="px-5 py-2 font-medium">
+                Status
+              </th>
+              <th scope="col" className="px-5 py-2 text-right font-medium">
+                Response
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {checks.map((check) => (
               <tr key={check.id}>
                 <td className="px-5 py-2 whitespace-nowrap text-zinc-600 dark:text-zinc-300">
-                  <time dateTime={check.checkedAt}>{timeFormat.format(new Date(check.checkedAt))} UTC</time>
+                  <time dateTime={check.checkedAt}>
+                    {timeFormat.format(new Date(check.checkedAt))} UTC
+                  </time>
                 </td>
                 <td className="px-5 py-2">
                   {check.ok ? (
-                    <span className="text-emerald-700 dark:text-emerald-400">Success</span>
+                    <span className="text-emerald-700 dark:text-emerald-400">
+                      Success
+                    </span>
                   ) : (
-                    <span className="text-red-700 dark:text-red-400">{check.error ?? "Failed"}</span>
+                    <span className="text-red-700 dark:text-red-400">
+                      {check.error ?? "Failed"}
+                    </span>
                   )}
                 </td>
-                <td className="px-5 py-2 font-mono text-xs">{check.statusCode ?? "—"}</td>
+                <td className="px-5 py-2 font-mono text-xs">
+                  {check.statusCode ?? "—"}
+                </td>
                 <td className="px-5 py-2 text-right font-mono text-xs whitespace-nowrap">
-                  {check.responseTimeMs === null ? "—" : `${check.responseTimeMs} ms`}
+                  {check.responseTimeMs === null
+                    ? "—"
+                    : `${check.responseTimeMs} ms`}
                 </td>
               </tr>
             ))}
@@ -95,9 +120,18 @@ export function CheckHistory({ monitorId, initialChecks, initialCursor }: CheckH
       </div>
       {(cursor || error) && (
         <div className="flex items-center justify-center gap-3 border-t border-zinc-200 px-5 py-3 dark:border-zinc-800">
-          {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+          {error && (
+            <p role="alert" className="text-sm text-red-600">
+              {error}
+            </p>
+          )}
           {cursor && (
-            <Button variant="ghost" size="sm" onClick={loadMore} disabled={loading}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={loadMore}
+              disabled={loading}
+            >
               {loading ? "Loading…" : "Load older checks"}
             </Button>
           )}

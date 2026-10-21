@@ -6,14 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Field, FormError, Input } from "@/components/ui/field";
 
 export function RegisterForm() {
-  const [state, action, pending] = useActionState<AuthFormState, FormData>(register, {});
+  const [state, action, pending] = useActionState<AuthFormState, FormData>(
+    register,
+    {},
+  );
   const errors = state.fieldErrors ?? {};
 
   return (
     <form action={action} className="space-y-4" noValidate>
       <FormError message={state.error} />
       <Field id="name" label="Name" error={errors.name}>
-        <Input id="name" autoComplete="name" required defaultValue={state.values?.name} error={errors.name} />
+        <Input
+          id="name"
+          autoComplete="name"
+          required
+          defaultValue={state.values?.name}
+          error={errors.name}
+        />
       </Field>
       <Field id="email" label="Email" error={errors.email}>
         <Input
@@ -25,7 +34,12 @@ export function RegisterForm() {
           error={errors.email}
         />
       </Field>
-      <Field id="password" label="Password" error={errors.password} hint="At least 8 characters.">
+      <Field
+        id="password"
+        label="Password"
+        error={errors.password}
+        hint="At least 8 characters."
+      >
         <Input
           id="password"
           type="password"

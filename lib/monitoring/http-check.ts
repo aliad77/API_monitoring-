@@ -77,7 +77,11 @@ export async function runHttpCheck(
         signal: controller.signal,
       });
 
-      if (followRedirects && isRedirect(response.statusCode) && response.location) {
+      if (
+        followRedirects &&
+        isRedirect(response.statusCode) &&
+        response.location
+      ) {
         if (redirects >= MAX_REDIRECTS) {
           throw new CheckError(`Stopped after ${MAX_REDIRECTS} redirects`);
         }
@@ -103,7 +107,11 @@ export async function runHttpCheck(
       ok: false,
       statusCode: null,
       responseTimeMs: null,
-      error: describeFailure(error, controller.signal.aborted, target.timeoutMs),
+      error: describeFailure(
+        error,
+        controller.signal.aborted,
+        target.timeoutMs,
+      ),
     };
   } finally {
     clearTimeout(timer);
@@ -127,7 +135,9 @@ async function resolvePublicAddress(
   // Reject the host if *any* record is internal, rather than picking a public
   // one, so a mixed record set can't be used to probe internal services.
   if (addresses.some((entry) => isBlockedAddress(entry.address))) {
-    throw new CheckError(`${hostname} resolves to a private or reserved address`);
+    throw new CheckError(
+      `${hostname} resolves to a private or reserved address`,
+    );
   }
   return addresses[0];
 }
@@ -150,7 +160,11 @@ function isRedirect(statusCode: number): boolean {
   return [301, 302, 303, 307, 308].includes(statusCode);
 }
 
-function describeFailure(error: unknown, timedOut: boolean, timeoutMs: number): string {
+function describeFailure(
+  error: unknown,
+  timedOut: boolean,
+  timeoutMs: number,
+): string {
   if (timedOut) {
     return `Timed out after ${timeoutMs} ms`;
   }

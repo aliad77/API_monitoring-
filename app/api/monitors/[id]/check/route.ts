@@ -19,7 +19,10 @@ export async function POST(_request: Request, { params }: Context) {
   }
 
   const nextCheckAt = earliestAllowedCheck(monitor.lastCheckedAt);
-  await prisma.monitor.update({ where: { id: monitor.id }, data: { nextCheckAt } });
+  await prisma.monitor.update({
+    where: { id: monitor.id },
+    data: { nextCheckAt },
+  });
 
   return Response.json({ nextCheckAt }, { status: 202 });
 }

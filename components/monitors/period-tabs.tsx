@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { PERIODS, type Period } from "@/lib/monitoring/options";
 
-export function PeriodTabs({ basePath, current }: { basePath: string; current: Period }) {
+export function PeriodTabs({
+  basePath,
+  current,
+}: {
+  basePath: string;
+  current: Period;
+}) {
   return (
-    <nav aria-label="Time period" className="inline-flex rounded-md border border-zinc-200 p-0.5 dark:border-zinc-800">
+    <nav
+      aria-label="Time period"
+      className="inline-flex rounded-md border border-zinc-200 p-0.5 dark:border-zinc-800"
+    >
       {(Object.keys(PERIODS) as Period[]).map((period) => (
         <Link
           key={period}

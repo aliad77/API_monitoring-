@@ -1,4 +1,12 @@
-import { CheckCircle2, CircleHelp, Gauge, Plus, Radio, ShieldCheck, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  CircleHelp,
+  Gauge,
+  Plus,
+  Radio,
+  ShieldCheck,
+  XCircle,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StatCard } from "@/components/dashboard/stat-card";
@@ -50,10 +58,31 @@ export default async function DashboardPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <StatCard label="Total monitors" value={counts.total} icon={Radio} detail={counts.paused > 0 ? `${counts.paused} paused` : undefined} />
-        <StatCard label="Operational" value={counts.up} icon={CheckCircle2} iconClassName="text-emerald-500" />
-        <StatCard label="Down" value={counts.down} icon={XCircle} iconClassName="text-red-500" />
-        <StatCard label="Pending" value={counts.unknown} icon={CircleHelp} iconClassName="text-amber-500" detail="Not checked yet" />
+        <StatCard
+          label="Total monitors"
+          value={counts.total}
+          icon={Radio}
+          detail={counts.paused > 0 ? `${counts.paused} paused` : undefined}
+        />
+        <StatCard
+          label="Operational"
+          value={counts.up}
+          icon={CheckCircle2}
+          iconClassName="text-emerald-500"
+        />
+        <StatCard
+          label="Down"
+          value={counts.down}
+          icon={XCircle}
+          iconClassName="text-red-500"
+        />
+        <StatCard
+          label="Pending"
+          value={counts.unknown}
+          icon={CircleHelp}
+          iconClassName="text-amber-500"
+          detail="Not checked yet"
+        />
         <StatCard
           label="Avg response"
           value={formatResponseTime(summary.avgResponseTimeMs)}
@@ -67,7 +96,10 @@ export default async function DashboardPage() {
           <CardHeader
             title="Recent incidents"
             action={
-              <Link href="/incidents" className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              <Link
+                href="/incidents"
+                className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+              >
                 View all
               </Link>
             }
@@ -75,7 +107,11 @@ export default async function DashboardPage() {
           {summary.recentIncidents.length > 0 ? (
             <IncidentList incidents={summary.recentIncidents} />
           ) : (
-            <EmptyState icon={ShieldCheck} title="No incidents" description="Incidents appear here when a monitor goes down." />
+            <EmptyState
+              icon={ShieldCheck}
+              title="No incidents"
+              description="Incidents appear here when a monitor goes down."
+            />
           )}
         </Card>
 
@@ -84,20 +120,38 @@ export default async function DashboardPage() {
           {summary.recentChecks.length > 0 ? (
             <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {summary.recentChecks.map((check) => (
-                <li key={check.id} className="flex items-center justify-between gap-4 px-5 py-2.5 text-sm">
+                <li
+                  key={check.id}
+                  className="flex items-center justify-between gap-4 px-5 py-2.5 text-sm"
+                >
                   <div className="flex min-w-0 items-center gap-2">
                     {check.ok ? (
-                      <CheckCircle2 className="size-4 shrink-0 text-emerald-500" aria-label="Success" />
+                      <CheckCircle2
+                        className="size-4 shrink-0 text-emerald-500"
+                        aria-label="Success"
+                      />
                     ) : (
-                      <XCircle className="size-4 shrink-0 text-red-500" aria-label="Failed" />
+                      <XCircle
+                        className="size-4 shrink-0 text-red-500"
+                        aria-label="Failed"
+                      />
                     )}
-                    <Link href={`/monitors/${check.monitor.id}`} className="truncate font-medium hover:underline">
+                    <Link
+                      href={`/monitors/${check.monitor.id}`}
+                      className="truncate font-medium hover:underline"
+                    >
                       {check.monitor.name}
                     </Link>
                   </div>
                   <div className="shrink-0 text-right text-xs text-zinc-500 dark:text-zinc-400">
-                    <span className="font-mono">{check.ok ? formatResponseTime(check.responseTimeMs) : (check.statusCode ?? "error")}</span>
-                    <span className="ml-3">{formatRelative(check.checkedAt)}</span>
+                    <span className="font-mono">
+                      {check.ok
+                        ? formatResponseTime(check.responseTimeMs)
+                        : (check.statusCode ?? "error")}
+                    </span>
+                    <span className="ml-3">
+                      {formatRelative(check.checkedAt)}
+                    </span>
                   </div>
                 </li>
               ))}

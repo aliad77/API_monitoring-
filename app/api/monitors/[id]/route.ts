@@ -1,7 +1,11 @@
 import { notFound, parseBody, unauthorized } from "@/lib/api";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
-import { earliestAllowedCheck, findUserMonitor, monitorSelect } from "@/lib/data/monitors";
+import {
+  earliestAllowedCheck,
+  findUserMonitor,
+  monitorSelect,
+} from "@/lib/data/monitors";
 import { monitorUpdateSchema } from "@/lib/validation";
 
 type Context = { params: Promise<{ id: string }> };

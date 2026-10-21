@@ -10,7 +10,9 @@ import { nodeTransport } from "@/lib/monitoring/node-transport";
 let server: Server | undefined;
 
 afterEach(async () => {
-  await new Promise<void>((resolve) => (server ? server.close(() => resolve()) : resolve()));
+  await new Promise<void>((resolve) =>
+    server ? server.close(() => resolve()) : resolve(),
+  );
   server = undefined;
 });
 
@@ -71,7 +73,10 @@ describe("nodeTransport", () => {
       signal: new AbortController().signal,
     });
 
-    expect(response).toEqual({ statusCode: 302, location: "http://127.0.0.1/admin" });
+    expect(response).toEqual({
+      statusCode: 302,
+      location: "http://127.0.0.1/admin",
+    });
   });
 
   it("resolves as soon as headers arrive, without reading an endless body", async () => {

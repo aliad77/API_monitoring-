@@ -6,7 +6,10 @@ import {
   type ResolvedAddress,
   type Resolver,
 } from "@/lib/monitoring/http-check";
-import type { Transport, TransportRequest } from "@/lib/monitoring/node-transport";
+import type {
+  Transport,
+  TransportRequest,
+} from "@/lib/monitoring/node-transport";
 
 const PUBLIC: ResolvedAddress = { address: "93.184.215.14", family: 4 };
 const OTHER_PUBLIC: ResolvedAddress = { address: "1.1.1.1", family: 4 };
@@ -22,12 +25,16 @@ const target: CheckTarget = {
 function resolverFor(records: Record<string, ResolvedAddress[]>): Resolver {
   return vi.fn(async (hostname: string) => {
     const result = records[hostname];
-    if (!result) throw Object.assign(new Error("not found"), { code: "ENOTFOUND" });
+    if (!result)
+      throw Object.assign(new Error("not found"), { code: "ENOTFOUND" });
     return result;
   });
 }
 
-function transportReturning(statusCode: number, location: string | null = null): Transport {
+function transportReturning(
+  statusCode: number,
+  location: string | null = null,
+): Transport {
   return vi.fn(async () => ({ statusCode, location }));
 }
 
@@ -45,7 +52,10 @@ describe("runHttpCheck", () => {
 
   it("connects to the address that passed validation", async () => {
     const transport = transportReturning(200);
-    await runHttpCheck(target, { resolve: resolverFor({ "api.example.com": [PUBLIC] }), transport });
+    await runHttpCheck(target, {
+      resolve: resolverFor({ "api.example.com": [PUBLIC] }),
+      transport,
+    });
 
     const request = vi.mocked(transport).mock.calls[0][0] as TransportRequest;
     expect(request.address).toEqual(PUBLIC);
@@ -72,14 +82,24 @@ describe("runHttpCheck", () => {
       transport: transportReturning(200),
     });
 
-    expect(outcome).toEqual({ ok: false, statusCode: null, responseTimeMs: null, error: "DNS lookup failed" });
+    expect(outcome).toEqual({
+      ok: false,
+      statusCode: null,
+      responseTimeMs: null,
+      error: "DNS lookup failed",
+    });
   });
 
   it("reports refused connections", async () => {
     const transport: Transport = vi.fn(async () => {
-      throw Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" });
+      throw Object.assign(new Error("connect ECONNREFUSED"), {
+        code: "ECONNREFUSED",
+      });
     });
-    const outcome = await runHttpCheck(target, { resolve: resolverFor({ "api.example.com": [PUBLIC] }), transport });
+    const outcome = await runHttpCheck(target, {
+      resolve: resolverFor({ "api.example.com": [PUBLIC] }),
+      transport,
+    });
 
     expect(outcome.error).toBe("Connection refused");
   });
@@ -95,12 +115,18 @@ describe("runHttpCheck", () => {
       { resolve: resolverFor({ "api.example.com": [PUBLIC] }), transport },
     );
 
-    expect(outcome).toMatchObject({ ok: false, error: "Timed out after 50 ms" });
+    expect(outcome).toMatchObject({
+      ok: false,
+      error: "Timed out after 50 ms",
+    });
   });
 
   it("applies the timeout to slow DNS resolution too", async () => {
     const resolve: Resolver = () => new Promise(() => {});
-    const outcome = await runHttpCheck({ ...target, timeoutMs: 50 }, { resolve, transport: transportReturning(200) });
+    const outcome = await runHttpCheck(
+      { ...target, timeoutMs: 50 },
+      { resolve, transport: transportReturning(200) },
+    );
 
     expect(outcome.error).toBe("Timed out after 50 ms");
   });
@@ -114,7 +140,9 @@ describe("runHttpCheck", () => {
       });
 
       expect(outcome.ok).toBe(false);
-      expect(outcome.error).toBe("api.example.com resolves to a private or reserved address");
+      expect(outcome.error).toBe(
+        "api.example.com resolves to a private or reserved address",
+      );
       expect(transport).not.toHaveBeenCalled();
     });
 
@@ -133,7 +161,9 @@ describe("runHttpCheck", () => {
       // First answer is public, every later answer is private. A client that
       // validated one lookup and then connected using another would be fooled.
       let calls = 0;
-      const resolve: Resolver = vi.fn(async () => (calls++ === 0 ? [PUBLIC] : [PRIVATE]));
+      const resolve: Resolver = vi.fn(async () =>
+        calls++ === 0 ? [PUBLIC] : [PRIVATE],
+      );
       const transport = transportReturning(200);
 
       const outcome = await runHttpCheck(target, { resolve, transport });
@@ -158,7 +188,9 @@ describe("runHttpCheck", () => {
 
       expect(outcome).toMatchObject({ ok: true, statusCode: 200 });
       expect(resolve).toHaveBeenCalledWith("www.example.org");
-      expect(vi.mocked(transport).mock.calls[1][0].address).toEqual(OTHER_PUBLIC);
+      expect(vi.mocked(transport).mock.calls[1][0].address).toEqual(
+        OTHER_PUBLIC,
+      );
     });
 
     it("blocks a redirect to a private IP literal", async () => {
@@ -167,7 +199,10 @@ describe("runHttpCheck", () => {
         location: "http://169.254.169.254/latest/meta-data/",
       }));
 
-      const outcome = await runHttpCheck(target, { resolve: resolverFor({ "api.example.com": [PUBLIC] }), transport });
+      const outcome = await runHttpCheck(target, {
+        resolve: resolverFor({ "api.example.com": [PUBLIC] }),
+        transport,
+      });
 
       expect(outcome.ok).toBe(false);
       expect(outcome.error).toMatch(/Private, loopback and reserved addresses/);
@@ -180,24 +215,35 @@ describe("runHttpCheck", () => {
           ? { statusCode: 307, location: "https://internal.example.net/" }
           : { statusCode: 200, location: null },
       );
-      const resolve = resolverFor({ "api.example.com": [PUBLIC], "internal.example.net": [PRIVATE] });
+      const resolve = resolverFor({
+        "api.example.com": [PUBLIC],
+        "internal.example.net": [PRIVATE],
+      });
 
       const outcome = await runHttpCheck(target, { resolve, transport });
 
-      expect(outcome.error).toBe("internal.example.net resolves to a private or reserved address");
+      expect(outcome.error).toBe(
+        "internal.example.net resolves to a private or reserved address",
+      );
       expect(transport).toHaveBeenCalledTimes(1);
     });
 
     it("blocks a redirect to a non-http scheme", async () => {
       const transport = transportReturning(302, "file:///etc/passwd");
-      const outcome = await runHttpCheck(target, { resolve: resolverFor({ "api.example.com": [PUBLIC] }), transport });
+      const outcome = await runHttpCheck(target, {
+        resolve: resolverFor({ "api.example.com": [PUBLIC] }),
+        transport,
+      });
 
       expect(outcome.error).toBe("Only http and https URLs can be monitored");
     });
 
     it(`stops after ${MAX_REDIRECTS} redirects`, async () => {
       const transport = transportReturning(302, "/again");
-      const outcome = await runHttpCheck(target, { resolve: resolverFor({ "api.example.com": [PUBLIC] }), transport });
+      const outcome = await runHttpCheck(target, {
+        resolve: resolverFor({ "api.example.com": [PUBLIC] }),
+        transport,
+      });
 
       expect(outcome.error).toBe(`Stopped after ${MAX_REDIRECTS} redirects`);
       expect(transport).toHaveBeenCalledTimes(MAX_REDIRECTS + 1);

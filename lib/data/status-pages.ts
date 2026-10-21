@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/db";
-import { calculateUptime, getCheckSeries, summarizeSeries, type SeriesPoint } from "./stats";
+import {
+  calculateUptime,
+  getCheckSeries,
+  summarizeSeries,
+  type SeriesPoint,
+} from "./stats";
 
 export function listUserStatusPages(userId: string) {
   return prisma.statusPage.findMany({
@@ -43,7 +48,9 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** One entry per UTC day, oldest first, including days with no checks. */
 function lastDays(points: SeriesPoint[], count: number) {
-  const byDay = new Map(points.map((point) => [point.bucketStart.getTime(), point]));
+  const byDay = new Map(
+    points.map((point) => [point.bucketStart.getTime(), point]),
+  );
   const today = Math.floor(Date.now() / DAY_MS) * DAY_MS;
 
   return Array.from({ length: count }, (_, index) => {
@@ -84,7 +91,11 @@ export async function getPublicStatusPage(slug: string) {
   const [services, incidents] = await Promise.all([
     Promise.all(
       monitors.map(async (monitor) => {
-        const days = await getCheckSeries(monitor.id, PUBLIC_HISTORY_DAYS * 24, "1 day");
+        const days = await getCheckSeries(
+          monitor.id,
+          PUBLIC_HISTORY_DAYS * 24,
+          "1 day",
+        );
         return {
           name: monitor.name,
           status: monitor.isActive ? monitor.status : ("PAUSED" as const),
@@ -94,7 +105,10 @@ export async function getPublicStatusPage(slug: string) {
       }),
     ),
     prisma.incident.findMany({
-      where: { monitorId: { in: monitors.map((m) => m.id) }, startedAt: { gte: since } },
+      where: {
+        monitorId: { in: monitors.map((m) => m.id) },
+        startedAt: { gte: since },
+      },
       orderBy: { startedAt: "desc" },
       take: 20,
       select: {
@@ -117,4 +131,6 @@ export async function getPublicStatusPage(slug: string) {
   };
 }
 
-export type PublicStatusPage = NonNullable<Awaited<ReturnType<typeof getPublicStatusPage>>>;
+export type PublicStatusPage = NonNullable<
+  Awaited<ReturnType<typeof getPublicStatusPage>>
+>;

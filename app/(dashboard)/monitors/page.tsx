@@ -9,7 +9,12 @@ import { PageHeader } from "@/components/ui/page-header";
 import { requireUserId } from "@/lib/auth/session";
 import { listUserMonitors } from "@/lib/data/monitors";
 import { getUptimeByMonitor } from "@/lib/data/stats";
-import { formatInterval, formatRelative, formatResponseTime, formatUptime } from "@/lib/format";
+import {
+  formatInterval,
+  formatRelative,
+  formatResponseTime,
+  formatUptime,
+} from "@/lib/format";
 import { MAX_MONITORS_PER_USER } from "@/lib/monitoring/options";
 
 export const metadata: Metadata = { title: "Monitors" };
@@ -56,19 +61,46 @@ export default async function MonitorsPage() {
             <table className="w-full text-sm">
               <thead className="text-left text-xs text-zinc-500 dark:text-zinc-400">
                 <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <th scope="col" className="px-5 py-3 font-medium">Monitor</th>
-                  <th scope="col" className="px-5 py-3 font-medium">Status</th>
-                  <th scope="col" className="hidden px-5 py-3 font-medium md:table-cell">Interval</th>
-                  <th scope="col" className="hidden px-5 py-3 font-medium sm:table-cell">Last check</th>
-                  <th scope="col" className="px-5 py-3 text-right font-medium">Response</th>
-                  <th scope="col" className="hidden px-5 py-3 text-right font-medium sm:table-cell">Uptime 24h</th>
+                  <th scope="col" className="px-5 py-3 font-medium">
+                    Monitor
+                  </th>
+                  <th scope="col" className="px-5 py-3 font-medium">
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    className="hidden px-5 py-3 font-medium md:table-cell"
+                  >
+                    Interval
+                  </th>
+                  <th
+                    scope="col"
+                    className="hidden px-5 py-3 font-medium sm:table-cell"
+                  >
+                    Last check
+                  </th>
+                  <th scope="col" className="px-5 py-3 text-right font-medium">
+                    Response
+                  </th>
+                  <th
+                    scope="col"
+                    className="hidden px-5 py-3 text-right font-medium sm:table-cell"
+                  >
+                    Uptime 24h
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
                 {monitors.map((monitor) => (
-                  <tr key={monitor.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
+                  <tr
+                    key={monitor.id}
+                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                  >
                     <td className="max-w-xs px-5 py-3">
-                      <Link href={`/monitors/${monitor.id}`} className="block truncate font-medium hover:underline">
+                      <Link
+                        href={`/monitors/${monitor.id}`}
+                        className="block truncate font-medium hover:underline"
+                      >
                         {monitor.name}
                       </Link>
                       <span className="block truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">
@@ -82,7 +114,9 @@ export default async function MonitorsPage() {
                       {formatInterval(monitor.intervalSeconds)}
                     </td>
                     <td className="hidden px-5 py-3 text-zinc-600 sm:table-cell dark:text-zinc-300">
-                      {monitor.lastCheckedAt ? formatRelative(monitor.lastCheckedAt) : "Never"}
+                      {monitor.lastCheckedAt
+                        ? formatRelative(monitor.lastCheckedAt)
+                        : "Never"}
                     </td>
                     <td className="px-5 py-3 text-right font-mono text-xs">
                       {formatResponseTime(monitor.lastResponseTimeMs)}

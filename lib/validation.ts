@@ -6,7 +6,12 @@ import {
 } from "@/lib/monitoring/options";
 import { validateMonitorUrl } from "@/lib/monitoring/url-policy";
 
-const email = z.string().trim().toLowerCase().email("Enter a valid email address").max(254);
+const email = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .email("Enter a valid email address")
+  .max(254);
 
 // bcrypt only uses the first 72 bytes of a password.
 const password = z
@@ -48,7 +53,11 @@ const monitorUrl = z
   });
 
 export const monitorInputSchema = z.object({
-  name: z.string().trim().min(1, "Enter a name").max(80, "Use at most 80 characters"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Enter a name")
+    .max(80, "Use at most 80 characters"),
   url: monitorUrl,
   method: z.enum(HTTP_METHODS),
   expectedStatus: z
@@ -84,7 +93,10 @@ export const statusPageInputSchema = z.object({
     .toLowerCase()
     .min(3, "Use at least 3 characters")
     .max(48, "Use at most 48 characters")
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers and single hyphens"),
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Use lowercase letters, numbers and single hyphens",
+    ),
   description: z.string().trim().max(280).optional().default(""),
   monitorIds: z.array(z.string().min(1)).max(25).default([]),
 });

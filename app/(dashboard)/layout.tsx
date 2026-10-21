@@ -3,10 +3,17 @@ import { AppNav } from "@/components/dashboard/app-nav";
 import { requireUserId } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const userId = await requireUserId();
   const [user, unreadCount] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true } }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true },
+    }),
     prisma.notification.count({ where: { userId, readAt: null } }),
   ]);
   // A valid session for an account that has since been deleted.

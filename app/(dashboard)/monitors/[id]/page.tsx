@@ -14,7 +14,12 @@ import { requireUserId } from "@/lib/auth/session";
 import { listIncidents } from "@/lib/data/incidents";
 import { findUserMonitor, listChecks } from "@/lib/data/monitors";
 import { getCheckSeries, summarizeSeries } from "@/lib/data/stats";
-import { formatInterval, formatRelative, formatResponseTime, formatUptime } from "@/lib/format";
+import {
+  formatInterval,
+  formatRelative,
+  formatResponseTime,
+  formatUptime,
+} from "@/lib/format";
 import { PERIODS, parsePeriod } from "@/lib/monitoring/options";
 
 export const metadata: Metadata = { title: "Monitor" };
@@ -53,7 +58,9 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="truncate text-2xl font-semibold tracking-tight">{monitor.name}</h1>
+            <h1 className="truncate text-2xl font-semibold tracking-tight">
+              {monitor.name}
+            </h1>
             <StatusBadge status={displayStatus(monitor)} />
           </div>
           <p className="mt-1 truncate font-mono text-sm text-zinc-500 dark:text-zinc-400">
@@ -66,15 +73,23 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
       <dl className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-200 bg-white p-5 text-sm sm:grid-cols-4 dark:border-zinc-800 dark:bg-zinc-900">
         <div>
           <dt className="text-zinc-500 dark:text-zinc-400">Last checked</dt>
-          <dd className="mt-1 font-medium">{monitor.lastCheckedAt ? formatRelative(monitor.lastCheckedAt) : "Never"}</dd>
+          <dd className="mt-1 font-medium">
+            {monitor.lastCheckedAt
+              ? formatRelative(monitor.lastCheckedAt)
+              : "Never"}
+          </dd>
         </div>
         <div>
           <dt className="text-zinc-500 dark:text-zinc-400">Last response</dt>
-          <dd className="mt-1 font-medium">{formatResponseTime(monitor.lastResponseTimeMs)}</dd>
+          <dd className="mt-1 font-medium">
+            {formatResponseTime(monitor.lastResponseTimeMs)}
+          </dd>
         </div>
         <div>
           <dt className="text-zinc-500 dark:text-zinc-400">Interval</dt>
-          <dd className="mt-1 font-medium">{formatInterval(monitor.intervalSeconds)}</dd>
+          <dd className="mt-1 font-medium">
+            {formatInterval(monitor.intervalSeconds)}
+          </dd>
         </div>
         <div>
           <dt className="text-zinc-500 dark:text-zinc-400">Expects</dt>
@@ -88,16 +103,24 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
         <div className="flex flex-col gap-4 border-b border-zinc-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
           <dl className="flex gap-8 text-sm">
             <div>
-              <dt className="text-zinc-500 dark:text-zinc-400">Uptime ({label})</dt>
-              <dd className="mt-0.5 text-xl font-semibold tabular-nums">{formatUptime(stats.uptime)}</dd>
+              <dt className="text-zinc-500 dark:text-zinc-400">
+                Uptime ({label})
+              </dt>
+              <dd className="mt-0.5 text-xl font-semibold tabular-nums">
+                {formatUptime(stats.uptime)}
+              </dd>
             </div>
             <div>
               <dt className="text-zinc-500 dark:text-zinc-400">Avg response</dt>
-              <dd className="mt-0.5 text-xl font-semibold tabular-nums">{formatResponseTime(stats.avgResponseTimeMs)}</dd>
+              <dd className="mt-0.5 text-xl font-semibold tabular-nums">
+                {formatResponseTime(stats.avgResponseTimeMs)}
+              </dd>
             </div>
             <div>
               <dt className="text-zinc-500 dark:text-zinc-400">Checks</dt>
-              <dd className="mt-0.5 text-xl font-semibold tabular-nums">{stats.totalChecks}</dd>
+              <dd className="mt-0.5 text-xl font-semibold tabular-nums">
+                {stats.totalChecks}
+              </dd>
             </div>
           </dl>
           <PeriodTabs basePath={`/monitors/${monitor.id}`} current={period} />
@@ -114,7 +137,8 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
           />
         </div>
         <p className="border-t border-zinc-200 px-5 py-3 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-          Uptime is the percentage of successful checks in this period. Outages shorter than the check interval may not be detected.
+          Uptime is the percentage of successful checks in this period. Outages
+          shorter than the check interval may not be detected.
         </p>
       </Card>
 
@@ -124,7 +148,10 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
           <CheckHistory
             monitorId={monitor.id}
             initialCursor={checks.nextCursor}
-            initialChecks={checks.items.map((check) => ({ ...check, checkedAt: check.checkedAt.toISOString() }))}
+            initialChecks={checks.items.map((check) => ({
+              ...check,
+              checkedAt: check.checkedAt.toISOString(),
+            }))}
           />
         </Card>
         <Card className="lg:col-span-2">
@@ -132,7 +159,10 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
             title="Incidents"
             action={
               incidents.nextCursor ? (
-                <Link href="/incidents" className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+                <Link
+                  href="/incidents"
+                  className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                >
                   View all
                 </Link>
               ) : undefined
@@ -141,7 +171,11 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
           {incidents.items.length > 0 ? (
             <IncidentList incidents={incidents.items} showMonitor={false} />
           ) : (
-            <EmptyState icon={ShieldCheck} title="No incidents" description="This monitor hasn't had any recorded downtime." />
+            <EmptyState
+              icon={ShieldCheck}
+              title="No incidents"
+              description="This monitor hasn't had any recorded downtime."
+            />
           )}
         </Card>
       </div>

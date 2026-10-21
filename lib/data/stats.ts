@@ -37,12 +37,17 @@ export function summarizeSeries(points: SeriesPoint[]) {
   return {
     totalChecks: total,
     uptime: calculateUptime(okCount, total),
-    avgResponseTimeMs: timedCount > 0 ? Math.round(responseTimeSum / timedCount) : null,
+    avgResponseTimeMs:
+      timedCount > 0 ? Math.round(responseTimeSum / timedCount) : null,
   };
 }
 
 /** Checks grouped into fixed time buckets, oldest first. */
-export function getCheckSeries(monitorId: string, hours: number, bucket: string) {
+export function getCheckSeries(
+  monitorId: string,
+  hours: number,
+  bucket: string,
+) {
   return prisma.$queryRaw<SeriesPoint[]>`
     SELECT
       date_bin(${bucket}::interval, "checkedAt", TIMESTAMPTZ '2000-01-01 00:00:00+00') AS "bucketStart",

@@ -24,7 +24,9 @@ export type ClaimedMonitor = {
  * time: rows locked by one worker's claim are skipped by the others instead of
  * being claimed twice or blocking.
  */
-export async function claimDueMonitors(limit: number): Promise<ClaimedMonitor[]> {
+export async function claimDueMonitors(
+  limit: number,
+): Promise<ClaimedMonitor[]> {
   const leaseToken = randomUUID();
   return prisma.$queryRaw<ClaimedMonitor[]>`
     UPDATE "Monitor"
@@ -126,7 +128,9 @@ export async function recordCheckResult(
         status: outcome.ok ? "UP" : "DOWN",
         lastCheckedAt: checkedAt,
         lastResponseTimeMs: outcome.responseTimeMs,
-        nextCheckAt: new Date(checkedAt.getTime() + claim.intervalSeconds * 1000),
+        nextCheckAt: new Date(
+          checkedAt.getTime() + claim.intervalSeconds * 1000,
+        ),
         leaseToken: null,
         leaseExpiresAt: null,
       },
@@ -139,7 +143,9 @@ export async function recordCheckResult(
 export const CHECK_RETENTION_DAYS = 35;
 
 export async function pruneOldChecks(): Promise<number> {
-  const cutoff = new Date(Date.now() - CHECK_RETENTION_DAYS * 24 * 60 * 60 * 1000);
+  const cutoff = new Date(
+    Date.now() - CHECK_RETENTION_DAYS * 24 * 60 * 60 * 1000,
+  );
   const result = await prisma.check.deleteMany({
     where: { checkedAt: { lt: cutoff } },
   });

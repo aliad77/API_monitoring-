@@ -19,7 +19,10 @@ export async function createUser() {
   return user;
 }
 
-export function createMonitor(userId: string, data: Partial<Prisma.MonitorUncheckedCreateInput> = {}) {
+export function createMonitor(
+  userId: string,
+  data: Partial<Prisma.MonitorUncheckedCreateInput> = {},
+) {
   return prisma.monitor.create({
     data: {
       userId,
@@ -32,7 +35,9 @@ export function createMonitor(userId: string, data: Partial<Prisma.MonitorUnchec
 
 /** Deleting the users cascades to everything else the tests created. */
 export async function deleteCreatedUsers() {
-  await prisma.user.deleteMany({ where: { id: { in: createdUserIds.splice(0) } } });
+  await prisma.user.deleteMany({
+    where: { id: { in: createdUserIds.splice(0) } },
+  });
 }
 
 export function jsonRequest(url: string, method: string, body?: unknown) {

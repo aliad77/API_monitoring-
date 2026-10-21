@@ -70,7 +70,9 @@ export function AppNav({ user, unreadCount }: AppNavProps) {
     <div className="border-t border-zinc-200 pt-4 dark:border-zinc-800">
       <div className="mb-3 min-w-0 px-3">
         <p className="truncate text-sm font-medium">{user.name ?? "Account"}</p>
-        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{user.email}</p>
+        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+          {user.email}
+        </p>
       </div>
       <form action={logout}>
         <button
@@ -99,12 +101,19 @@ export function AppNav({ user, unreadCount }: AppNavProps) {
             aria-label={open ? "Close menu" : "Open menu"}
             className="rounded-md p-2 text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
-            {open ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
+            {open ? (
+              <X className="size-5" aria-hidden />
+            ) : (
+              <Menu className="size-5" aria-hidden />
+            )}
           </button>
         </div>
       </div>
       {open && (
-        <div id="mobile-nav" className="border-b border-zinc-200 bg-white px-4 py-4 lg:hidden dark:border-zinc-800 dark:bg-zinc-950">
+        <div
+          id="mobile-nav"
+          className="border-b border-zinc-200 bg-white px-4 py-4 lg:hidden dark:border-zinc-800 dark:bg-zinc-950"
+        >
           {nav}
           <div className="mt-4">{account}</div>
         </div>

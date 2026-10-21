@@ -28,7 +28,11 @@ function slugify(value: string) {
     .slice(0, 48);
 }
 
-export function StatusPageForm({ statusPageId, initialValues, monitors }: StatusPageFormProps) {
+export function StatusPageForm({
+  statusPageId,
+  initialValues,
+  monitors,
+}: StatusPageFormProps) {
   const router = useRouter();
   const [values, setValues] = useState<StatusPageValues>(
     initialValues ?? { title: "", slug: "", description: "", monitorIds: [] },
@@ -67,9 +71,18 @@ export function StatusPageForm({ statusPageId, initialValues, monitors }: Status
   }
 
   async function handleDelete() {
-    if (!statusPageId || !window.confirm("Delete this status page? Its public URL will stop working.")) return;
+    if (
+      !statusPageId ||
+      !window.confirm(
+        "Delete this status page? Its public URL will stop working.",
+      )
+    )
+      return;
     setSaving(true);
-    const result = await apiRequest(`/api/status-pages/${statusPageId}`, "DELETE");
+    const result = await apiRequest(
+      `/api/status-pages/${statusPageId}`,
+      "DELETE",
+    );
     if (result.ok) {
       router.push("/status-pages");
       router.refresh();
@@ -92,12 +105,21 @@ export function StatusPageForm({ statusPageId, initialValues, monitors }: Status
           error={errors.title}
           onChange={(event) => {
             const title = event.target.value;
-            setValues((current) => ({ ...current, title, slug: slugEdited ? current.slug : slugify(title) }));
+            setValues((current) => ({
+              ...current,
+              title,
+              slug: slugEdited ? current.slug : slugify(title),
+            }));
           }}
         />
       </Field>
 
-      <Field id="slug" label="Public address" error={errors.slug} hint={`/status/${values.slug || "your-page"}`}>
+      <Field
+        id="slug"
+        label="Public address"
+        error={errors.slug}
+        hint={`/status/${values.slug || "your-page"}`}
+      >
         <Input
           id="slug"
           value={values.slug}
@@ -112,28 +134,43 @@ export function StatusPageForm({ statusPageId, initialValues, monitors }: Status
         />
       </Field>
 
-      <Field id="description" label="Description (optional)" error={errors.description}>
+      <Field
+        id="description"
+        label="Description (optional)"
+        error={errors.description}
+      >
         <Textarea
           id="description"
           rows={2}
           maxLength={280}
           value={values.description}
           error={errors.description}
-          onChange={(event) => setValues((current) => ({ ...current, description: event.target.value }))}
+          onChange={(event) =>
+            setValues((current) => ({
+              ...current,
+              description: event.target.value,
+            }))
+          }
         />
       </Field>
 
       <fieldset>
         <legend className="text-sm font-medium">Monitors to show</legend>
         <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-          Visitors see each monitor&apos;s name, status, uptime and incident times — never its URL or settings.
+          Visitors see each monitor&apos;s name, status, uptime and incident
+          times — never its URL or settings.
         </p>
         {monitors.length === 0 ? (
-          <p className="mt-3 text-sm text-zinc-500">You don&apos;t have any monitors yet.</p>
+          <p className="mt-3 text-sm text-zinc-500">
+            You don&apos;t have any monitors yet.
+          </p>
         ) : (
           <div className="mt-3 space-y-2">
             {monitors.map((monitor) => (
-              <label key={monitor.id} className="flex items-center gap-3 text-sm">
+              <label
+                key={monitor.id}
+                className="flex items-center gap-3 text-sm"
+              >
                 <input
                   type="checkbox"
                   className="size-4 rounded border-zinc-300 dark:border-zinc-700"
@@ -145,18 +182,31 @@ export function StatusPageForm({ statusPageId, initialValues, monitors }: Status
             ))}
           </div>
         )}
-        {errors.monitorIds && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{errors.monitorIds}</p>}
+        {errors.monitorIds && (
+          <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+            {errors.monitorIds}
+          </p>
+        )}
       </fieldset>
 
       <div className="flex flex-wrap gap-3 pt-2">
         <Button type="submit" disabled={saving}>
-          {saving ? "Saving…" : statusPageId ? "Save changes" : "Create status page"}
+          {saving
+            ? "Saving…"
+            : statusPageId
+              ? "Save changes"
+              : "Create status page"}
         </Button>
         <Link href="/status-pages" className={buttonStyles("secondary")}>
           Cancel
         </Link>
         {statusPageId && (
-          <Button variant="danger" className="sm:ml-auto" onClick={handleDelete} disabled={saving}>
+          <Button
+            variant="danger"
+            className="sm:ml-auto"
+            onClick={handleDelete}
+            disabled={saving}
+          >
             Delete
           </Button>
         )}
