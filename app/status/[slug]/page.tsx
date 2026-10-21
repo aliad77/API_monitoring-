@@ -56,16 +56,16 @@ const serviceLabels: Record<
 function overallStatus(services: PublicStatusPage["services"]) {
   const down = services.filter((service) => service.status === "DOWN").length;
   if (down === 0) {
-    return { text: "All systems operational", className: "bg-emerald-600" };
+    return { text: "All systems operational", className: "bg-emerald-700" };
   }
   if (down === services.length) {
-    return { text: "Major outage", className: "bg-red-600" };
+    return { text: "Major outage", className: "bg-red-700" };
   }
-  return { text: "Partial outage", className: "bg-amber-600" };
+  return { text: "Partial outage", className: "bg-amber-700" };
 }
 
 function dayBarClass(uptime: number | null) {
-  if (uptime === null) return "bg-haze-200 dark:bg-haze-800";
+  if (uptime === null) return "bg-lavender/15";
   if (uptime >= 99) return "bg-emerald-500";
   if (uptime >= 95) return "bg-amber-500";
   return "bg-red-500";
@@ -84,10 +84,14 @@ export default async function PublicStatusPageView({ params }: PageProps) {
   const overall = overallStatus(page.services);
 
   return (
+    <div className="grid-canvas min-h-screen">
     <div className="mx-auto max-w-3xl px-4 py-10">
       <header className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <p className="font-pixel text-[11px] tracking-widest text-lavender-deep uppercase dark:text-lavender">
+            Status
+          </p>
+          <h1 className="mt-1 font-display text-3xl font-bold tracking-tight">
             {page.title}
           </h1>
           {page.description && (
@@ -101,19 +105,20 @@ export default async function PublicStatusPageView({ params }: PageProps) {
 
       {page.services.length > 0 && (
         <div
-          className={`mb-8 rounded-lg px-5 py-4 font-medium text-white ${overall.className}`}
+          className={`mb-8 flex items-center gap-3 rounded-2xl px-5 py-4 font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35)] ${overall.className}`}
         >
+          <span className="size-2.5 bg-white" aria-hidden />
           {overall.text}
         </div>
       )}
 
       <section
         aria-labelledby="services-heading"
-        className="rounded-lg border border-haze-200 bg-white dark:border-haze-800 dark:bg-haze-900"
+        className="glass rounded-2xl"
       >
         <h2
           id="services-heading"
-          className="border-b border-haze-200 px-5 py-3 text-sm font-semibold dark:border-haze-800"
+          className="border-b border-(--edge) px-5 py-3 font-pixel text-xs tracking-wide uppercase"
         >
           Services
         </h2>
@@ -122,7 +127,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
             No services are listed on this page yet.
           </p>
         ) : (
-          <ul className="divide-y divide-haze-100 dark:divide-haze-800">
+          <ul className="divide-y divide-(--edge)">
             {page.services.map((service, index) => {
               const {
                 label,
@@ -141,7 +146,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
                     </span>
                   </div>
                   <div
-                    className="mt-3 flex h-8 gap-0.5"
+                    className="mt-3 flex h-8 gap-[3px]"
                     role="img"
                     aria-label={`Daily uptime for the last 30 days: ${formatUptime(service.uptime)} overall`}
                   >
@@ -149,7 +154,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
                       <div
                         key={day.date}
                         title={`${dayFormat.format(new Date(day.date))}: ${formatUptime(day.uptime)}`}
-                        className={`flex-1 rounded-sm ${dayBarClass(day.uptime)}`}
+                        className={`flex-1 ${dayBarClass(day.uptime)}`}
                       />
                     ))}
                   </div>
@@ -168,7 +173,10 @@ export default async function PublicStatusPageView({ params }: PageProps) {
       </section>
 
       <section aria-labelledby="incidents-heading" className="mt-8">
-        <h2 id="incidents-heading" className="mb-3 text-sm font-semibold">
+        <h2
+          id="incidents-heading"
+          className="mb-3 font-pixel text-xs tracking-wide uppercase"
+        >
           Incidents in the last 30 days
         </h2>
         {page.incidents.length === 0 ? (
@@ -180,7 +188,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
             {page.incidents.map((incident) => (
               <li
                 key={`${incident.serviceName}-${incident.startedAt}`}
-                className="rounded-lg border border-haze-200 bg-white px-5 py-3 text-sm dark:border-haze-800 dark:bg-haze-900"
+                className="glass rounded-xl px-5 py-3 text-sm"
               >
                 <p className="font-medium">
                   {incident.serviceName}{" "}
@@ -203,6 +211,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
           Powered by <Logo />
         </span>
       </footer>
+    </div>
     </div>
   );
 }
