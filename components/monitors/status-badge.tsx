@@ -27,7 +27,7 @@ const styles: Record<
   PAUSED: {
     label: "Paused",
     className:
-      "bg-zinc-100 text-zinc-600 ring-zinc-500/20 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-400/20",
+      "bg-haze-100 text-haze-600 ring-haze-500/20 dark:bg-haze-800 dark:text-haze-300 dark:ring-haze-400/20",
     icon: PauseCircle,
   },
 };

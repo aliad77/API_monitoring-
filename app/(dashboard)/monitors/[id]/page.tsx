@@ -49,7 +49,7 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
     <>
       <Link
         href="/monitors"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-haze-500 hover:text-haze-900 dark:text-haze-400 dark:hover:text-haze-100"
       >
         <ArrowLeft className="size-4" aria-hidden />
         Monitors
@@ -63,16 +63,16 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
             </h1>
             <StatusBadge status={displayStatus(monitor)} />
           </div>
-          <p className="mt-1 truncate font-mono text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 truncate font-mono text-sm text-haze-500 dark:text-haze-400">
             {monitor.method} {monitor.url}
           </p>
         </div>
         <MonitorActions monitor={monitor} />
       </div>
 
-      <dl className="grid grid-cols-2 gap-4 rounded-lg border border-zinc-200 bg-white p-5 text-sm sm:grid-cols-4 dark:border-zinc-800 dark:bg-zinc-900">
+      <dl className="grid grid-cols-2 gap-4 rounded-lg border border-haze-200 bg-white p-5 text-sm sm:grid-cols-4 dark:border-haze-800 dark:bg-haze-900">
         <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">Last checked</dt>
+          <dt className="text-haze-500 dark:text-haze-400">Last checked</dt>
           <dd className="mt-1 font-medium">
             {monitor.lastCheckedAt
               ? formatRelative(monitor.lastCheckedAt)
@@ -80,19 +80,19 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
           </dd>
         </div>
         <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">Last response</dt>
+          <dt className="text-haze-500 dark:text-haze-400">Last response</dt>
           <dd className="mt-1 font-medium">
             {formatResponseTime(monitor.lastResponseTimeMs)}
           </dd>
         </div>
         <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">Interval</dt>
+          <dt className="text-haze-500 dark:text-haze-400">Interval</dt>
           <dd className="mt-1 font-medium">
             {formatInterval(monitor.intervalSeconds)}
           </dd>
         </div>
         <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">Expects</dt>
+          <dt className="text-haze-500 dark:text-haze-400">Expects</dt>
           <dd className="mt-1 font-medium">
             HTTP {monitor.expectedStatus} within {monitor.timeoutMs / 1000}s
           </dd>
@@ -100,10 +100,10 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
       </dl>
 
       <Card className="mt-6">
-        <div className="flex flex-col gap-4 border-b border-zinc-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
+        <div className="flex flex-col gap-4 border-b border-haze-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-haze-800">
           <dl className="flex gap-8 text-sm">
             <div>
-              <dt className="text-zinc-500 dark:text-zinc-400">
+              <dt className="text-haze-500 dark:text-haze-400">
                 Uptime ({label})
               </dt>
               <dd className="mt-0.5 text-xl font-semibold tabular-nums">
@@ -111,13 +111,13 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
               </dd>
             </div>
             <div>
-              <dt className="text-zinc-500 dark:text-zinc-400">Avg response</dt>
+              <dt className="text-haze-500 dark:text-haze-400">Avg response</dt>
               <dd className="mt-0.5 text-xl font-semibold tabular-nums">
                 {formatResponseTime(stats.avgResponseTimeMs)}
               </dd>
             </div>
             <div>
-              <dt className="text-zinc-500 dark:text-zinc-400">Checks</dt>
+              <dt className="text-haze-500 dark:text-haze-400">Checks</dt>
               <dd className="mt-0.5 text-xl font-semibold tabular-nums">
                 {stats.totalChecks}
               </dd>
@@ -136,7 +136,7 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
             }))}
           />
         </div>
-        <p className="border-t border-zinc-200 px-5 py-3 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+        <p className="border-t border-haze-200 px-5 py-3 text-xs text-haze-500 dark:border-haze-800 dark:text-haze-400">
           Uptime is the percentage of successful checks in this period. Outages
           shorter than the check interval may not be detected.
         </p>
@@ -161,7 +161,7 @@ export default async function MonitorPage({ params, searchParams }: PageProps) {
               incidents.nextCursor ? (
                 <Link
                   href="/incidents"
-                  className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  className="text-xs font-medium text-haze-500 hover:text-haze-900 dark:hover:text-haze-100"
                 >
                   View all
                 </Link>

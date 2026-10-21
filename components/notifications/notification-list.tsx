@@ -57,8 +57,8 @@ export function NotificationList({
 
   return (
     <Card>
-      <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-3 dark:border-zinc-800">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      <div className="flex items-center justify-between border-b border-haze-200 px-5 py-3 dark:border-haze-800">
+        <p className="text-sm text-haze-500 dark:text-haze-400">
           {unread} unread
         </p>
         <Button
@@ -72,14 +72,14 @@ export function NotificationList({
           Mark all as read
         </Button>
       </div>
-      <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+      <ul className="divide-y divide-haze-100 dark:divide-haze-800">
         {notifications.map((notification) => {
           const opened = notification.type === "INCIDENT_OPENED";
           const Icon = opened ? XCircle : CheckCircle2;
           return (
             <li
               key={notification.id}
-              className={`flex items-start gap-3 px-5 py-3 ${notification.readAt ? "" : "bg-sky-50/60 dark:bg-sky-950/30"}`}
+              className={`flex items-start gap-3 px-5 py-3 ${notification.readAt ? "" : "bg-lavender/10"}`}
             >
               <Icon
                 className={`mt-0.5 size-4 shrink-0 ${opened ? "text-red-500" : "text-emerald-500"}`}
@@ -92,10 +92,10 @@ export function NotificationList({
                     <span className="sr-only"> (unread)</span>
                   )}
                 </p>
-                <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
+                <p className="truncate text-sm text-haze-500 dark:text-haze-400">
                   {notification.body}
                 </p>
-                <p className="mt-1 text-xs text-zinc-400">
+                <p className="mt-1 text-xs text-haze-400">
                   {timeFormat.format(new Date(notification.createdAt))} UTC
                 </p>
               </div>

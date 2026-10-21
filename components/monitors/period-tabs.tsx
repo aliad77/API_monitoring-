@@ -11,7 +11,7 @@ export function PeriodTabs({
   return (
     <nav
       aria-label="Time period"
-      className="inline-flex rounded-md border border-zinc-200 p-0.5 dark:border-zinc-800"
+      className="inline-flex rounded-md border border-haze-200 p-0.5 dark:border-haze-800"
     >
       {(Object.keys(PERIODS) as Period[]).map((period) => (
         <Link
@@ -21,8 +21,8 @@ export function PeriodTabs({
           scroll={false}
           className={`rounded px-3 py-1 text-xs font-medium ${
             period === current
-              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-              : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              ? "bg-haze-900 text-white dark:bg-haze-100 dark:text-haze-900"
+              : "text-haze-600 hover:text-haze-900 dark:text-haze-400 dark:hover:text-haze-100"
           }`}
         >
           {PERIODS[period].label}

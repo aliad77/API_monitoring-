@@ -98,7 +98,7 @@ export default async function DashboardPage() {
             action={
               <Link
                 href="/incidents"
-                className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                className="text-xs font-medium text-haze-500 hover:text-haze-900 dark:hover:text-haze-100"
               >
                 View all
               </Link>
@@ -118,7 +118,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader title="Recent checks" />
           {summary.recentChecks.length > 0 ? (
-            <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <ul className="divide-y divide-haze-100 dark:divide-haze-800">
               {summary.recentChecks.map((check) => (
                 <li
                   key={check.id}
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
                       {check.monitor.name}
                     </Link>
                   </div>
-                  <div className="shrink-0 text-right text-xs text-zinc-500 dark:text-zinc-400">
+                  <div className="shrink-0 text-right text-xs text-haze-500 dark:text-haze-400">
                     <span className="font-mono">
                       {check.ok
                         ? formatResponseTime(check.responseTimeMs)

@@ -60,7 +60,7 @@ export function CheckHistory({
 
   if (checks.length === 0) {
     return (
-      <p className="px-5 py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="px-5 py-8 text-center text-sm text-haze-500 dark:text-haze-400">
         No checks yet. Make sure the worker is running.
       </p>
     );
@@ -70,8 +70,8 @@ export function CheckHistory({
     <div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="text-left text-xs text-zinc-500 dark:text-zinc-400">
-            <tr className="border-b border-zinc-200 dark:border-zinc-800">
+          <thead className="text-left text-xs text-haze-500 dark:text-haze-400">
+            <tr className="border-b border-haze-200 dark:border-haze-800">
               <th scope="col" className="px-5 py-2 font-medium">
                 Time
               </th>
@@ -86,10 +86,10 @@ export function CheckHistory({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <tbody className="divide-y divide-haze-100 dark:divide-haze-800">
             {checks.map((check) => (
               <tr key={check.id}>
-                <td className="px-5 py-2 whitespace-nowrap text-zinc-600 dark:text-zinc-300">
+                <td className="px-5 py-2 whitespace-nowrap text-haze-600 dark:text-haze-300">
                   <time dateTime={check.checkedAt}>
                     {timeFormat.format(new Date(check.checkedAt))} UTC
                   </time>
@@ -119,7 +119,7 @@ export function CheckHistory({
         </table>
       </div>
       {(cursor || error) && (
-        <div className="flex items-center justify-center gap-3 border-t border-zinc-200 px-5 py-3 dark:border-zinc-800">
+        <div className="flex items-center justify-center gap-3 border-t border-haze-200 px-5 py-3 dark:border-haze-800">
           {error && (
             <p role="alert" className="text-sm text-red-600">
               {error}

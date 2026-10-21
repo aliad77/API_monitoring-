@@ -49,7 +49,7 @@ const serviceLabels: Record<
   PAUSED: {
     label: "Not monitored",
     icon: PauseCircle,
-    className: "text-zinc-500",
+    className: "text-haze-500",
   },
 };
 
@@ -65,7 +65,7 @@ function overallStatus(services: PublicStatusPage["services"]) {
 }
 
 function dayBarClass(uptime: number | null) {
-  if (uptime === null) return "bg-zinc-200 dark:bg-zinc-800";
+  if (uptime === null) return "bg-haze-200 dark:bg-haze-800";
   if (uptime >= 99) return "bg-emerald-500";
   if (uptime >= 95) return "bg-amber-500";
   return "bg-red-500";
@@ -91,7 +91,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
             {page.title}
           </h1>
           {page.description && (
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-sm text-haze-500 dark:text-haze-400">
               {page.description}
             </p>
           )}
@@ -109,20 +109,20 @@ export default async function PublicStatusPageView({ params }: PageProps) {
 
       <section
         aria-labelledby="services-heading"
-        className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+        className="rounded-lg border border-haze-200 bg-white dark:border-haze-800 dark:bg-haze-900"
       >
         <h2
           id="services-heading"
-          className="border-b border-zinc-200 px-5 py-3 text-sm font-semibold dark:border-zinc-800"
+          className="border-b border-haze-200 px-5 py-3 text-sm font-semibold dark:border-haze-800"
         >
           Services
         </h2>
         {page.services.length === 0 ? (
-          <p className="px-5 py-8 text-center text-sm text-zinc-500">
+          <p className="px-5 py-8 text-center text-sm text-haze-500">
             No services are listed on this page yet.
           </p>
         ) : (
-          <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <ul className="divide-y divide-haze-100 dark:divide-haze-800">
             {page.services.map((service, index) => {
               const {
                 label,
@@ -153,7 +153,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
                       />
                     ))}
                   </div>
-                  <div className="mt-2 flex justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                  <div className="mt-2 flex justify-between text-xs text-haze-500 dark:text-haze-400">
                     <span>
                       {dayFormat.format(new Date(service.days[0].date))}
                     </span>
@@ -172,7 +172,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
           Incidents in the last 30 days
         </h2>
         {page.incidents.length === 0 ? (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-haze-500 dark:text-haze-400">
             No incidents reported.
           </p>
         ) : (
@@ -180,13 +180,13 @@ export default async function PublicStatusPageView({ params }: PageProps) {
             {page.incidents.map((incident) => (
               <li
                 key={`${incident.serviceName}-${incident.startedAt}`}
-                className="rounded-lg border border-zinc-200 bg-white px-5 py-3 text-sm dark:border-zinc-800 dark:bg-zinc-900"
+                className="rounded-lg border border-haze-200 bg-white px-5 py-3 text-sm dark:border-haze-800 dark:bg-haze-900"
               >
                 <p className="font-medium">
                   {incident.serviceName}{" "}
                   {incident.resolvedAt ? "was unavailable" : "is unavailable"}
                 </p>
-                <p className="mt-1 text-zinc-500 dark:text-zinc-400">
+                <p className="mt-1 text-haze-500 dark:text-haze-400">
                   Started {formatDateTime(incident.startedAt)}
                   {incident.resolvedAt
                     ? ` · resolved after ${formatDuration(new Date(incident.resolvedAt).getTime() - new Date(incident.startedAt).getTime())}`
@@ -198,7 +198,7 @@ export default async function PublicStatusPageView({ params }: PageProps) {
         )}
       </section>
 
-      <footer className="mt-12 flex justify-center text-sm text-zinc-500">
+      <footer className="mt-12 flex justify-center text-sm text-haze-500">
         <span className="inline-flex items-center gap-2">
           Powered by <Logo />
         </span>

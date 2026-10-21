@@ -79,7 +79,7 @@ export default async function HomePage() {
 
       <main className="flex-1">
         <section className="mx-auto max-w-3xl px-6 pt-16 pb-20 text-center sm:pt-24">
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1 text-xs font-medium text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-haze-200 px-3 py-1 text-xs font-medium text-haze-600 dark:border-haze-800 dark:text-haze-400">
             <span
               className="size-1.5 rounded-full bg-emerald-500"
               aria-hidden
@@ -89,7 +89,7 @@ export default async function HomePage() {
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
             Know when your endpoints go down — and for how long.
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
+          <p className="mx-auto mt-5 max-w-xl text-lg text-haze-600 dark:text-haze-400">
             Pulse checks your websites and APIs on a schedule, records every
             response, and keeps a clear history of outages you can investigate
             and share.
@@ -112,7 +112,7 @@ export default async function HomePage() {
 
         <section
           aria-labelledby="features-heading"
-          className="border-t border-zinc-200 bg-white py-20 dark:border-zinc-800 dark:bg-zinc-900/40"
+          className="border-t border-haze-200 bg-white py-20 dark:border-haze-800 dark:bg-haze-900/40"
         >
           <div className="mx-auto max-w-6xl px-6">
             <h2
@@ -124,11 +124,11 @@ export default async function HomePage() {
             <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {features.map(({ icon: Icon, title, description }) => (
                 <div key={title}>
-                  <div className="mb-3 inline-flex rounded-md border border-zinc-200 p-2 dark:border-zinc-800">
+                  <div className="mb-3 inline-flex rounded-md border border-haze-200 p-2 dark:border-haze-800">
                     <Icon className="size-5" aria-hidden />
                   </div>
                   <h3 className="font-semibold">{title}</h3>
-                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="mt-1 text-sm text-haze-600 dark:text-haze-400">
                     {description}
                   </p>
                 </div>
@@ -138,7 +138,7 @@ export default async function HomePage() {
         </section>
       </main>
 
-      <footer className="border-t border-zinc-200 py-6 text-center text-sm text-zinc-500 dark:border-zinc-800">
+      <footer className="border-t border-haze-200 py-6 text-center text-sm text-haze-500 dark:border-haze-800">
         Pulse is an open-source portfolio project.
       </footer>
     </div>

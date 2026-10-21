@@ -38,7 +38,7 @@ export default async function StatusPagesPage() {
             action={create}
           />
         ) : (
-          <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <ul className="divide-y divide-haze-100 dark:divide-haze-800">
             {statusPages.map((page) => (
               <li
                 key={page.id}
@@ -46,7 +46,7 @@ export default async function StatusPagesPage() {
               >
                 <div className="min-w-0">
                   <p className="font-medium">{page.title}</p>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  <p className="text-sm text-haze-500 dark:text-haze-400">
                     /status/{page.slug} · {page._count.monitors} monitors
                   </p>
                 </div>

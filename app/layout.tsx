@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Silkscreen, Unbounded } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const unbounded = Unbounded({ subsets: ["latin"], variable: "--font-unbounded" });
+// Pixel face for short labels, badges and counters only, never paragraphs.
+const silkscreen = Silkscreen({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-silkscreen",
+});
 
 export const metadata: Metadata = {
   title: { default: "Pulse — API & uptime monitoring", template: "%s · Pulse" },
@@ -19,7 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${unbounded.variable} ${silkscreen.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

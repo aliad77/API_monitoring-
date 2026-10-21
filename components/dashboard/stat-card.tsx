@@ -5,7 +5,7 @@ export function StatCard({
   value,
   detail,
   icon: Icon,
-  iconClassName = "text-zinc-400",
+  iconClassName = "text-haze-400",
 }: {
   label: string;
   value: string | number;
@@ -14,16 +14,16 @@ export function StatCard({
   iconClassName?: string;
 }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="rounded-lg border border-haze-200 bg-white p-5 dark:border-haze-800 dark:bg-haze-900">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">{label}</p>
+        <p className="text-sm text-haze-500 dark:text-haze-400">{label}</p>
         <Icon className={`size-4 ${iconClassName}`} aria-hidden />
       </div>
       <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums">
         {value}
       </p>
       {detail && (
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-xs text-haze-500 dark:text-haze-400">
           {detail}
         </p>
       )}
