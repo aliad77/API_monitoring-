@@ -22,12 +22,24 @@ I built it as a portfolio project to practise the parts of a real product that a
 
 No screenshots yet. I'll add real screenshots of the running application once it has been run locally. The repository contains no mock-ups presented as screenshots.
 
+## Design
+
+Pulse has its own visual identity: Y2K-inspired chrome and glossy glass panels, a lavender, candy, aqua and acid-lime palette on purple-tinted neutrals, a pixel font for labels and badges, and original pixel sprites (including Pip, a small CRT mascot). The data-heavy screens use a calmer version of the same system, so tables, forms and charts stay readable.
+
+The landing page is a scroll-driven 3D sequence: a chrome monitoring station that turns towards the viewer, a fly-through of the five steps of a check, and a dashboard that rotates up off the page. Implementation notes:
+
+- **CSS 3D only.** The station is built from real six-faced CSS boxes (`perspective` and `transform-style: preserve-3d`), with no WebGL and no animation library. Nothing added to the dependency list.
+- **One scroll listener.** `components/landing/scroll-stage.tsx` reads each scene's position once per animation frame and writes a `--p` progress value (and a step number) to it. All motion is CSS reading that value, so scrolling never re-renders React, and only `transform` and `opacity` are animated.
+- **Reduced motion.** Every scene has a complete static layout; the motion is added only under `prefers-reduced-motion: no-preference`.
+- **Mobile.** Smaller station, fewer decorative objects, no orbiting sprites, and the hero and dashboard scroll normally instead of pinning.
+- **Honest illustrations.** Every illustrative panel on the landing page is labelled as sample data and uses `example.com` hosts.
+
 ## Tech stack
 
 | Area       | Choice                                                   |
 | ---------- | -------------------------------------------------------- |
 | Framework  | Next.js 15 (App Router), React 19, TypeScript            |
-| Styling    | Tailwind CSS 4, Lucide icons, Recharts                   |
+| Styling    | Tailwind CSS 4, CSS 3D transforms, Lucide icons, Recharts |
 | Database   | PostgreSQL 16, Prisma ORM                                |
 | Auth       | Auth.js v5 (credentials provider, JWT sessions), bcrypt  |
 | Validation | Zod                                                      |
