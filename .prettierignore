@@ -2,3 +2,5 @@
 node_modules
 prisma/migrations
 package-lock.json
+
+.github/workflows/bootstrap.yml
