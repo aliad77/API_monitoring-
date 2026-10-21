@@ -70,8 +70,8 @@ export function CheckHistory({
     <div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="text-left text-xs text-haze-500 dark:text-haze-400">
-            <tr className="border-b border-haze-200 dark:border-haze-800">
+          <thead className="text-left font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+            <tr className="border-b border-(--edge)">
               <th scope="col" className="px-5 py-2 font-medium">
                 Time
               </th>
@@ -86,7 +86,7 @@ export function CheckHistory({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-haze-100 dark:divide-haze-800">
+          <tbody className="divide-y divide-(--edge)">
             {checks.map((check) => (
               <tr key={check.id}>
                 <td className="px-5 py-2 whitespace-nowrap text-haze-600 dark:text-haze-300">
@@ -119,7 +119,7 @@ export function CheckHistory({
         </table>
       </div>
       {(cursor || error) && (
-        <div className="flex items-center justify-center gap-3 border-t border-haze-200 px-5 py-3 dark:border-haze-800">
+        <div className="flex items-center justify-center gap-3 border-t border-(--edge) px-5 py-3">
           {error && (
             <p role="alert" className="text-sm text-red-600">
               {error}

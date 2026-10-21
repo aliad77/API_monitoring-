@@ -10,7 +10,7 @@ export function IncidentList({
   showMonitor?: boolean;
 }) {
   return (
-    <ul className="divide-y divide-haze-100 dark:divide-haze-800">
+    <ul className="divide-y divide-(--edge)">
       {incidents.map((incident) => {
         const end = incident.resolvedAt ?? new Date();
         const duration = formatDuration(
@@ -24,7 +24,7 @@ export function IncidentList({
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span
-                  className={`size-2 shrink-0 rounded-full ${incident.resolvedAt ? "bg-haze-400" : "bg-red-500"}`}
+                  className={`size-2 shrink-0 ${incident.resolvedAt ? "bg-haze-400" : "bg-red-500 animate-pixel-blink"}`}
                   aria-hidden
                 />
                 {showMonitor ? (

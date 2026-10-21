@@ -118,7 +118,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader title="Recent checks" />
           {summary.recentChecks.length > 0 ? (
-            <ul className="divide-y divide-haze-100 dark:divide-haze-800">
+            <ul className="divide-y divide-(--edge)">
               {summary.recentChecks.map((check) => (
                 <li
                   key={check.id}

@@ -4,13 +4,14 @@ type Variant = "primary" | "secondary" | "danger" | "ghost";
 type Size = "sm" | "md";
 
 const variants: Record<Variant, string> = {
+  // Glossy lavender: a top highlight and darker base give it a pressable feel.
   primary:
-    "bg-haze-900 text-white hover:bg-haze-700 dark:bg-haze-100 dark:text-haze-900 dark:hover:bg-haze-300",
-  secondary:
-    "border border-haze-300 bg-white text-haze-900 hover:bg-haze-100 dark:border-haze-700 dark:bg-haze-900 dark:text-haze-100 dark:hover:bg-haze-800",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+    "border border-[#4b2fb8] bg-linear-to-b from-[#7d5bf5] to-[#5838cf] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_8px_20px_-10px_var(--glow)] hover:brightness-110",
+  secondary: "chrome hover:brightness-[1.04]",
+  danger:
+    "border border-red-800 bg-linear-to-b from-red-500 to-red-700 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.3)] hover:brightness-110",
   ghost:
-    "text-haze-600 hover:bg-haze-100 hover:text-haze-900 dark:text-haze-400 dark:hover:bg-haze-800 dark:hover:text-haze-100",
+    "text-haze-600 hover:bg-lavender/10 hover:text-haze-950 dark:text-haze-300 dark:hover:text-white",
 };
 
 const sizes: Record<Size, string> = {
@@ -20,7 +21,7 @@ const sizes: Record<Size, string> = {
 
 /** Shared so links can look like buttons without duplicating classes. */
 export function buttonStyles(variant: Variant = "primary", size: Size = "md") {
-  return `inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 ${variants[variant]} ${sizes[size]}`;
+  return `inline-flex items-center justify-center gap-2 rounded-lg font-medium transition active:translate-y-px active:brightness-95 disabled:pointer-events-none disabled:opacity-50 ${variants[variant]} ${sizes[size]}`;
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

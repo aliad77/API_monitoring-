@@ -6,7 +6,7 @@ import type {
 } from "react";
 
 const controlStyles =
-  "block w-full rounded-md border bg-white px-3 py-2 text-sm text-haze-900 placeholder:text-haze-400 disabled:opacity-60 dark:bg-haze-900 dark:text-haze-100";
+  "block w-full rounded-lg border bg-white/85 px-3 py-2 text-sm text-haze-950 shadow-[inset_0_1px_2px_rgb(21_16_34/0.06)] transition placeholder:text-haze-400 focus:border-lavender disabled:opacity-60 dark:bg-haze-950/60 dark:text-haze-50";
 
 function borderFor(error?: string) {
   return error

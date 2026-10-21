@@ -59,8 +59,8 @@ export default async function MonitorsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-left text-xs text-haze-500 dark:text-haze-400">
-                <tr className="border-b border-haze-200 dark:border-haze-800">
+              <thead className="text-left font-pixel text-[11px] tracking-wide text-haze-500 uppercase dark:text-haze-400">
+                <tr className="border-b border-(--edge)">
                   <th scope="col" className="px-5 py-3 font-medium">
                     Monitor
                   </th>
@@ -90,11 +90,11 @@ export default async function MonitorsPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-haze-100 dark:divide-haze-800">
+              <tbody className="divide-y divide-(--edge)">
                 {monitors.map((monitor) => (
                   <tr
                     key={monitor.id}
-                    className="hover:bg-haze-50 dark:hover:bg-haze-800/40"
+                    className="hover:bg-lavender/5"
                   >
                     <td className="max-w-xs px-5 py-3">
                       <Link

@@ -38,7 +38,7 @@ export default async function StatusPagesPage() {
             action={create}
           />
         ) : (
-          <ul className="divide-y divide-haze-100 dark:divide-haze-800">
+          <ul className="divide-y divide-(--edge)">
             {statusPages.map((page) => (
               <li
                 key={page.id}

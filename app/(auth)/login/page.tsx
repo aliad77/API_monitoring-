@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Sign in" };
 export default function LoginPage() {
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">
+      <h1 className="font-display text-2xl font-semibold tracking-tight">
         Sign in to Pulse
       </h1>
       <p className="mt-1 mb-6 text-sm text-haze-500 dark:text-haze-400">
@@ -18,7 +18,7 @@ export default function LoginPage() {
         No account yet?{" "}
         <Link
           href="/register"
-          className="font-medium text-haze-900 underline-offset-4 hover:underline dark:text-haze-100"
+          className="font-medium text-lavender-deep underline-offset-4 hover:underline dark:text-lavender"
         >
           Create one
         </Link>

@@ -14,12 +14,14 @@ export function StatCard({
   iconClassName?: string;
 }) {
   return (
-    <div className="rounded-lg border border-haze-200 bg-white p-5 dark:border-haze-800 dark:bg-haze-900">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-haze-500 dark:text-haze-400">{label}</p>
-        <Icon className={`size-4 ${iconClassName}`} aria-hidden />
+    <div className="glass rounded-2xl p-5 transition-transform duration-300 hover:-translate-y-1">
+      <div className="flex items-center justify-between gap-2">
+        <p className="font-pixel text-[11px] tracking-wide text-haze-600 uppercase dark:text-haze-300">
+          {label}
+        </p>
+        <Icon className={`size-4 shrink-0 ${iconClassName}`} aria-hidden />
       </div>
-      <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums">
+      <p className="mt-3 font-display text-3xl font-semibold tracking-tight tabular-nums">
         {value}
       </p>
       {detail && (

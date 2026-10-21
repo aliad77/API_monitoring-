@@ -41,6 +41,7 @@
   --glow: rgb(107 75 224 / 0.28);
   --grid-line: rgb(107 75 224 / 0.07);
   --canvas: #f4f1ff;
+  --chart-line: #6b4be0;
 }
 
 .dark {
@@ -51,6 +52,7 @@
   --glow: rgb(155 123 255 / 0.4);
   --grid-line: rgb(155 123 255 / 0.07);
   --canvas: #151022;
+  --chart-line: #9b7bff;
 }
 
 /* Glossy translucent panel used for cards, windows and the sidebar. */
@@ -167,6 +169,10 @@
   }
 }
 
+.chart-glow .recharts-area-curve {
+  filter: drop-shadow(0 0 6px var(--glow));
+}
+
 @keyframes pixel-blink {
   50% {
     opacity: 0.35;
@@ -189,5 +195,22 @@
 
   .animate-chart-reveal {
     animation: chart-reveal 0.9s steps(24, end) both;
+  }
+}
+
+@keyframes pixel-pulse-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  60%,
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pixel-pulse-trace {
+    stroke-dasharray: 1;
+    animation: pixel-pulse-draw 2.4s steps(20, end) infinite;
   }
 }

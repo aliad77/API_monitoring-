@@ -57,7 +57,7 @@ export function NotificationList({
 
   return (
     <Card>
-      <div className="flex items-center justify-between border-b border-haze-200 px-5 py-3 dark:border-haze-800">
+      <div className="flex items-center justify-between border-b border-(--edge) px-5 py-3">
         <p className="text-sm text-haze-500 dark:text-haze-400">
           {unread} unread
         </p>
@@ -72,7 +72,7 @@ export function NotificationList({
           Mark all as read
         </Button>
       </div>
-      <ul className="divide-y divide-haze-100 dark:divide-haze-800">
+      <ul className="divide-y divide-(--edge)">
         {notifications.map((notification) => {
           const opened = notification.type === "INCIDENT_OPENED";
           const Icon = opened ? XCircle : CheckCircle2;
